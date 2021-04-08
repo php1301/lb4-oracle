@@ -1,0 +1,13 @@
+{
+  "password": "test1234",
+  "username": "php1301",
+  "email": "final@1234.com",
+  "soDT": "string",
+  "hoTen": "string",
+  "maLoaiNguoiDung": 1
+}
+
+{
+  "email": "final@1234.com",
+  "password": "test1234"
+}
