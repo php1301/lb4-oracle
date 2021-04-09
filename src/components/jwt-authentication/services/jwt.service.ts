@@ -36,6 +36,7 @@ export class JWTService implements TokenService {
           [securityId]: decodedToken.id,
           name: decodedToken.name,
           id: decodedToken.id,
+          email: decodedToken.email,
         },
       );
     } catch (error) {
@@ -47,6 +48,7 @@ export class JWTService implements TokenService {
   }
 
   async generateToken(userProfile: UserProfile): Promise<string> {
+    console.log(userProfile)
     if (!userProfile) {
       throw new HttpErrors.Unauthorized(
         'Error generating token : userProfile is null',

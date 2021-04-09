@@ -25,12 +25,11 @@ export class MyUserService implements UserService<Users, Credentials> {
     const foundUser = await this.userRepository.findOne({
       where: {email: credentials.email},
     });
-    console.log(foundUser);
     if (!foundUser) {
       throw new HttpErrors.Unauthorized(invalidCredentialsError);
     }
 
-    const credentialsFound = await this.userRepository.findCredentials(1);
+    const credentialsFound = await this.userRepository.findCredentials(foundUser.taiKhoan);
     if (!credentialsFound) {
       throw new HttpErrors.Unauthorized(invalidCredentialsError);
     }
@@ -49,9 +48,9 @@ export class MyUserService implements UserService<Users, Credentials> {
 
   convertToUserProfile(user: Users): UserProfile {
     return {
-      [securityId]: user.id.toString(),
+      [securityId]: user.taiKhoan.toString(),
       name: user.username,
-      id: user.id,
+      id: user.taiKhoan,
       email: user.email,
     };
   }
