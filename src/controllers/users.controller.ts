@@ -8,13 +8,12 @@ import {model, property, repository} from '@loopback/repository';
 import {
   get,
   getModelSchemaRef,
-  HttpErrors,
   post,
   requestBody,
   SchemaObject,
 } from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {compare, genSalt, hash} from 'bcryptjs';
+import {genSalt, hash} from 'bcryptjs';
 import {
   Credentials,
   TokenServiceBindings,
@@ -68,40 +67,6 @@ export class UserController {
   // Dang le xe su ly trong service
   // Nhung service cua loopback bind singleton - User
   // Oracle ko cho table User
-  async verifyCredentials(credentials: Credentials): Promise<Users> {
-    const invalidCredentialsError = 'Invalid email or password.';
-    const foundUser = await this.userRepository.findOne({
-      where: {email: credentials.email},
-    });
-    console.log(foundUser);
-    if (!foundUser) {
-      throw new HttpErrors.Unauthorized(invalidCredentialsError);
-    }
-
-    const credentialsFound = await this.userRepository.findCredentials(foundUser.taiKhoan);
-    if (!credentialsFound) {
-      throw new HttpErrors.Unauthorized(invalidCredentialsError);
-    }
-
-    const passwordMatched = await compare(
-      credentials.password,
-      credentialsFound.password,
-    );
-
-    if (!passwordMatched) {
-      throw new HttpErrors.Unauthorized(invalidCredentialsError);
-    }
-
-    return foundUser;
-  }
-  convertToUserProfile(user: Users): UserProfile {
-    return {
-      [securityId]: user.taiKhoan?.toString(),
-      name: user.username,
-      id: user.id,
-      email: user.email,
-    };
-  }
   @post('/login', {
     responses: {
       '200': {
@@ -125,13 +90,12 @@ export class UserController {
     @requestBody(CredentialsRequestBody) credentials: Credentials,
   ): Promise<{token: string}> {
     // ensure the user exists, and the password is correct
-    const user = await this.verifyCredentials(credentials);
+    const user = await this.userService.verifyCredentials(credentials);
     // convert a Users object into a UserProfile object (reduced set of properties)
-    const userProfile = this.convertToUserProfile(user);
+    const userProfile = this.userService.convertToUserProfile(user);
 
     // create a JSON Web Token based on the user profile
     const token = await this.jwtService.generateToken(userProfile);
-
     return {token};
   }
   @authenticate('jwt')
@@ -153,6 +117,7 @@ export class UserController {
     @inject(SecurityBindings.USER)
     currentUserProfile: UserProfile,
   ): Promise<string> {
+    console.log(currentUserProfile)
     return currentUserProfile[securityId];
   }
 
