@@ -1,24 +1,30 @@
+import {AuthenticationComponent} from '@loopback/authentication';
+import {AuthorizationComponent} from '@loopback/authorization';
 import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
-import {
-  RestExplorerBindings,
-  RestExplorerComponent,
-} from '@loopback/rest-explorer';
+import {ApplicationConfig, BindingKey} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
+import {RestExplorerComponent} from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
-import {AuthenticationComponent} from '@loopback/authentication';
-import {
-  JWTAuthenticationComponent,
-  SECURITY_SCHEME_SPEC,
-  UserServiceBindings,
-} from '@loopback/authentication-jwt';
 import path from 'path';
+import {CasbinAuthorizationComponent} from './components/casbin-authorization';
+import {
+  SECURITY_SCHEME_SPEC,
+  JWTAuthenticationComponent,
+} from './components/jwt-authentication';
 import {MySequence} from './sequence';
-import {DbDataSource} from './datasources';
-import * as dotenv from 'dotenv';
-dotenv.config();
+
 export {ApplicationConfig};
+
+/**
+ * Information from package.json
+ */
+export interface PackageInfo {
+  name: string;
+  version: string;
+  description: string;
+}
+export const PackageKey = BindingKey.create<PackageInfo>('application.package');
 
 export class MovieHeqtApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
@@ -32,11 +38,14 @@ export class MovieHeqtApplication extends BootMixin(
     // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
 
-    // Customize @loopback/rest-explorer configuration here
-    this.configure(RestExplorerBindings.COMPONENT).to({
-      path: '/explorer',
-    });
+    this.addSecuritySpec();
+
     this.component(RestExplorerComponent);
+    // Bind authentication and authorization related elements
+    this.component(AuthenticationComponent);
+    this.component(AuthorizationComponent);
+    this.component(JWTAuthenticationComponent);
+    this.component(CasbinAuthorizationComponent);
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
@@ -48,16 +57,8 @@ export class MovieHeqtApplication extends BootMixin(
         nested: true,
       },
     };
-    // ------ ADD SNIPPET AT THE BOTTOM ---------
-    // Mount authentication system
-    this.component(AuthenticationComponent);
-    // Mount jwt component
-    this.component(JWTAuthenticationComponent);
-    // Bind datasource
-    this.dataSource(DbDataSource, UserServiceBindings.DATASOURCE_NAME);
-
-    // ------------- END OF SNIPPET -------------
   }
+
   addSecuritySpec(): void {
     this.api({
       openapi: '3.0.0',
