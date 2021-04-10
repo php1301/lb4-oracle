@@ -6,3 +6,5 @@ export * from './cum-rap-he-thong-rap.controller';
 export * from './rap.controller';
 export * from './cum-rap.controller';
 export * from './he-thong-rap.controller';
+export * from './ghe-loai-ghe.controller';
+export * from './ghe-rap.controller';
