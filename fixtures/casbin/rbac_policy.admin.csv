@@ -1,4 +1,5 @@
-p, admin, project*, view-all
+p, admin, rap*, view-all
+# admin co the perform action view-all tren moi rap
 p, admin, project1, donate
 p, admin, project2, donate
-g, u3, admin
+g, u4, admin
