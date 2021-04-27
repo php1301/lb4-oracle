@@ -21,10 +21,11 @@ import {authorize} from '@loopback/authorization';
 import {assignProjectInstanceId} from '../components/casbin-authorization';
 import {Rap} from '../models';
 import {RapRepository} from '../repositories';
-const RESOURCE_NAME = 'project';
+import {authenticate} from '@loopback/authentication';
+const RESOURCE_NAME = 'rap';
 const ACL_PROJECT = {
   'view-all': {
-    resource: `${RESOURCE_NAME}*`,
+    resource: `${RESOURCE_NAME}*`, // resource se truyen vo getResourceName
     scopes: ['view-all'],
     allowedRoles: ['admin'],
   },
@@ -93,6 +94,7 @@ export class RapController {
       },
     },
   })
+  @authenticate('jwt')
   @authorize(ACL_PROJECT['view-all'])
   async find(@param.filter(Rap) filter?: Filter<Rap>): Promise<Rap[]> {
     return this.rapRepository.find(filter);
