@@ -29,15 +29,15 @@ export class CasbinAuthorizationProvider implements Provider<Authorizer> {
     authorizationCtx: AuthorizationContext,
     metadata: AuthorizationMetadata,
   ): Promise<AuthorizationDecision> {
-    console.log(authorizationCtx)
     const subject = this.getUserName(authorizationCtx.principals[0].id);
     console.log(subject)
     const resourceId = await authorizationCtx.invocationContext.get(
       RESOURCE_ID,
       {optional: true},
     );
+    console.log(resourceId)
     const object = resourceId ?? metadata.resource ?? authorizationCtx.resource;
-
+      console.log(object)
     const request: AuthorizationRequest = {
       subject,
       object,
@@ -45,22 +45,23 @@ export class CasbinAuthorizationProvider implements Provider<Authorizer> {
     };
 
     const allowedRoles = metadata.allowedRoles;
-
+    console.log(allowedRoles)
+    // Nếu ko có allowRoles hoặc set có giá trị false thì allow all
     if (!allowedRoles) return AuthorizationDecision.ALLOW;
     if (allowedRoles.length < 1) return AuthorizationDecision.DENY;
 
     let allow = false;
-
+    console.log(request)
     // An optimization for ONLY searching among the allowed roles' policies
     for (const role of allowedRoles) {
       const enforcer = await this.enforcerFactory(role);
-
+      console.log(enforcer)
       const allowedByRole = await enforcer.enforce(
         request.subject,
         request.object,
         request.action,
       );
-
+        console.log(allowedByRole)
       debug(`authorizer role: ${role}, result: ${allowedByRole}`);
       if (allowedByRole) {
         allow = true;
