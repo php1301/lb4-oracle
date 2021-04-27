@@ -3,8 +3,8 @@ import path from 'path';
 
 const POLICY_PATHS = {
   admin: './../../../../fixtures/casbin/rbac_policy.admin.csv',
-  owner: './../../../../fixtures/casbin/rbac_policy.owner.csv',
-  team: './../../../../fixtures/casbin/rbac_policy.team_member.csv',
+  client: './../../../../fixtures/casbin/rbac_policy.client.csv',
+  vip: './../../../../fixtures/casbin/rbac_policy.vip.csv',
 };
 
 export async function getCasbinEnforcerByName(
@@ -12,8 +12,8 @@ export async function getCasbinEnforcerByName(
 ): Promise<casbin.Enforcer | undefined> {
   const CASBIN_ENFORCERS: {[key: string]: Promise<casbin.Enforcer>} = {
     admin: createEnforcerByRole(POLICY_PATHS.admin),
-    owner: createEnforcerByRole(POLICY_PATHS.owner),
-    team: createEnforcerByRole(POLICY_PATHS.team),
+    client: createEnforcerByRole(POLICY_PATHS.client),
+    vip: createEnforcerByRole(POLICY_PATHS.vip),
   };
   if (Object.prototype.hasOwnProperty.call(CASBIN_ENFORCERS, name))
     return CASBIN_ENFORCERS[name];
