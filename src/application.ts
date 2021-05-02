@@ -13,7 +13,8 @@ import {
   JWTAuthenticationComponent,
 } from './components/jwt-authentication';
 import {MySequence} from './sequence';
-
+import * as dotenv from 'dotenv';
+dotenv.config();
 export {ApplicationConfig};
 
 /**
