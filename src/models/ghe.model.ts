@@ -8,9 +8,8 @@ export class Ghe extends Entity {
     type: 'number',
     id: true,
     generated: false,
-    required: true,
   })
-  maGhe: number;
+  maGhe?: number;
 
   @property({
     type: 'string',
