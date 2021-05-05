@@ -13,6 +13,8 @@ import {
 import {genSalt, hash} from 'bcryptjs';
 import {
   CumRapRepository,
+  GheRepository,
+  LoaiGheRepository,
   LoaiNguoiDungRepository,
   RapRepository,
   UsersRepository,
@@ -36,6 +38,10 @@ export class SampleObserver implements LifeCycleObserver {
     private cumRapRepo: CumRapRepository,
     @inject('repositories.HeThongRapRepository')
     private heThongRapRepo: HeThongRapRepository,
+    @inject('repositories.GheRepository')
+    private gheRepo: GheRepository,
+    @inject('repositories.LoaiGheRepository')
+    private loaiGheRepo: LoaiGheRepository,
   ) {}
 
   /**
@@ -50,6 +56,8 @@ export class SampleObserver implements LifeCycleObserver {
       await this.createHeThongRap();
       await this.createCumRap();
       await this.createRap();
+      await this.createLoaiGhe();
+      await this.createGhe();
     }
   }
 
@@ -67,11 +75,11 @@ export class SampleObserver implements LifeCycleObserver {
       },
     });
     if (existed.length === 0) {
-      const hashedPassword = await this.hashPassword('test1234', 10);
+      const hashedPassword = await this.hashPassword('test12345', 10);
       const users = [
         {
           username: 'php1301',
-          email: 'test1234@gmail.com',
+          email: 'test12345@gmail.com',
           password: hashedPassword,
           maLoaiNguoiDung: 1,
         },
@@ -275,6 +283,71 @@ export class SampleObserver implements LifeCycleObserver {
         await this.heThongRapRepo.create(h);
       }
       console.log('HeThongRap Seeded');
+    }
+  }
+  async createLoaiGhe(): Promise<void> {
+    const existed = await this.loaiGheRepo.find({
+      where: {
+        maLoaiGhe: 1,
+      },
+    });
+    if (existed.length === 0) {
+      const loaiGhe = [
+        {
+          tenLoaiGhe: 'Ghe Thuong',
+          moTa: 'Ghế thường, không có khuyến mãi',
+          chietKhau: 0,
+        },
+        {
+          tenLoaiGhe: 'Ghe VIP',
+          moTa: 'Ghế VIP, có khuyến mãi',
+          chietKhau: 50,
+        },
+      ];
+      for (const lg of loaiGhe) {
+        await this.loaiGheRepo.create(lg);
+      }
+      console.log('LoaiGhe Seeded');
+    }
+  }
+  async createGhe(): Promise<void> {
+    const existed = await this.gheRepo.find({
+      where: {
+        maGhe: 1,
+      },
+    });
+    if (existed.length === 0) {
+      const arr = [...Array(7)];
+      const maLoaiGheArr = [1, 2];
+      arr.map((value, index) => {
+        // inti stt mỗi rạp
+        let stt = 0;
+        const alphabet = ['A', 'B', 'C', 'D', 'E', 'F'];
+        alphabet.map(alpha => {
+          // Có thể random seat số lượng ghế mỗi hàng từ 10 ~ 12
+          // const arrSeats = [...Array(Math.floor(Math.random() * 15) + 1)]; // random từ 1 đến 15
+          const arrSeats = [...Array(Math.floor(Math.random() * 15) + 10)];
+          return arrSeats.map(async (seat, seatIndex) => {
+            stt += 1;
+            try {
+              await this.gheRepo.create({
+                // seed 7 rạp 0->6 => +1
+                maRap: index + 1,
+                // Tên ghế là chữ + số ghế hàng đó
+                tenGhe: `${alpha}${seatIndex + 1}`,
+                stt: stt,
+                // Random maLoaiGhe
+                maLoaiGhe:
+                  maLoaiGheArr[Math.floor(Math.random() * maLoaiGheArr.length)],
+                kichHoat: false,
+              });
+            } catch (e) {
+              console.log(e);
+            }
+          });
+        });
+      });
+      console.log('Ghe Seeded');
     }
   }
   async hashPassword(password: string, rounds: number): Promise<string> {
