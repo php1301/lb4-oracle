@@ -1,9 +1,24 @@
 import {ApplicationConfig, MovieHeqtApplication} from './application';
-
+import {DbDataSource} from './datasources/db.datasource';
+const cfenv = require('cfenv');
+const appEnv = cfenv.getAppEnv();
 export * from './application';
 
 export async function main(options: ApplicationConfig = {}) {
+  if (!options) options = {};
+  if (!options.rest) options.rest = {};
+  options.rest.port = appEnv.isLocal ? options.rest.port : appEnv.port;
+  options.rest.host = appEnv.isLocal ? options.rest.host : appEnv.host;
+
   const app = new MovieHeqtApplication(options);
+
+  if (!appEnv.isLocal) {
+    const dbConfig = Object.assign({}, DbDataSource.defaultConfig, {
+      url: appEnv.getServiceURL('myCloudant'),
+    });
+    app.bind('datasources.config.db').to(dbConfig);
+  }
+
   await app.boot();
   await app.start();
 
