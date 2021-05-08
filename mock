@@ -11,3 +11,49 @@
   "email": "final@1234.com",
   "password": "test1234"
 }
+
+{
+  "email": "test12345@gmail.com",
+  "password": "test1234"
+}
+
+    "prestart": "npm run rebuild",
+org is mail
+
+https://stackoverflow.com/questions/58744732/how-to-fix-org-or-space-not-found-error-while-creating-toolchain-in-ibm-cloud
+nEY04HKBj8S0iWbNiAqgfQtTLiMjbm002Ro-Cp1PM9Bi
+
+{
+  "ngayDat": "string",
+  "giaVe": 3000,
+  "maLichChieu": 49,
+  "taiKhoan": 2,
+  "ghe": [
+    {
+      "maGhe": "string"
+    }
+  ]
+}
+
+{
+  "offset": 0,
+  "limit": 100,
+  "skip": 0,
+  "fields": {
+    "maVe": true,
+    "ngayDat": true,
+    "giaVe": true,
+    "maLichChieu": true,
+    "taiKhoan": true
+  }
+}
+
+TRIGGER
+1. Kiem tra ghe trung
+2. Set kichHoat tren ghe moi khi DatVe thanh cong
+3. Kiem tra xem HeThongRap->CumRap->Rap hay khong
+4. Kiem tra xem ngayChieu co sau ngayKhoiChieu cua Phim luc tao LichChieu hay khong
+Stored Procedure
+1. Query toan bo lich chieu cua he thong rap -> cumrap -> rap
+2. Goi Y HeThongRap -> CumRap -> Rap cho combobox
+3. Tinh tien ve (nghien cuu them goi stored procedure o nodejs), tien ve se = tien cua cac ghe(base on loaiGhe) + loai
