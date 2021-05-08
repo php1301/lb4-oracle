@@ -1,6 +1,14 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
 
+// const configDep = {
+//   name: 'db',
+//   connector: 'cloudant',
+//   url: 'http://admin:pass@localhost:8080',
+//   database: 'heqtv1',
+//   modelIndex: '',
+// };
+
 const config = {
   name: 'db',
   connector: 'oracle',
