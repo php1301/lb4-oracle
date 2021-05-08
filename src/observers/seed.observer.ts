@@ -1,4 +1,3 @@
-import {HeThongRapRepository} from './../repositories/he-thong-rap.repository';
 import {
   Application,
   CoreBindings,
@@ -14,9 +13,14 @@ import {genSalt, hash} from 'bcryptjs';
 import {
   CumRapRepository,
   GheRepository,
+  HeThongRapRepository,
+  LichChieuRepository,
   LoaiGheRepository,
   LoaiNguoiDungRepository,
+  PhimRepository,
+  PhimTheLoaiRepository,
   RapRepository,
+  TheLoaiRepository,
   UsersRepository,
 } from '../repositories';
 
@@ -42,6 +46,14 @@ export class SampleObserver implements LifeCycleObserver {
     private gheRepo: GheRepository,
     @inject('repositories.LoaiGheRepository')
     private loaiGheRepo: LoaiGheRepository,
+    @inject('repositories.TheLoaiRepository')
+    private theLoaiRepo: TheLoaiRepository,
+    @inject('repositories.PhimRepository')
+    private phimRepo: PhimRepository,
+    @inject('repositories.PhimTheLoaiRepository')
+    private phimTheLoaiRepo: PhimTheLoaiRepository,
+    @inject('repositories.LichChieuRepository')
+    private lichChieuRepo: LichChieuRepository,
   ) {}
 
   /**
@@ -58,6 +70,10 @@ export class SampleObserver implements LifeCycleObserver {
       await this.createRap();
       await this.createLoaiGhe();
       await this.createGhe();
+      await this.createTheLoai();
+      await this.createPhim();
+      await this.createPhimTheLoai();
+      await this.createLichChieu();
     }
   }
 
@@ -350,8 +366,212 @@ export class SampleObserver implements LifeCycleObserver {
       console.log('Ghe Seeded');
     }
   }
+  async createTheLoai(): Promise<void> {
+    const existed = await this.theLoaiRepo.find({
+      where: {
+        maTheLoai: 1,
+      },
+    });
+    if (existed.length === 0) {
+      const theLoai = [
+        {
+          tenTheLoai: 'Vien Tuong',
+        },
+        {
+          tenTheLoai: 'Hanh Dong',
+        },
+        {
+          tenTheLoai: 'Tinh Cam',
+        },
+        {
+          tenTheLoai: 'StoryTelling',
+        },
+        {
+          tenTheLoai: 'Motion',
+        },
+      ];
+      for (const tl of theLoai) {
+        await this.theLoaiRepo.create(tl);
+      }
+      console.log('TheLoai seeded');
+    }
+  }
+  async createPhim(): Promise<void> {
+    const existed = await this.phimRepo.find({
+      where: {
+        maPhim: 1,
+      },
+    });
+    if (existed.length === 0) {
+      const a = [];
+      const randomTenPhim = [
+        '13 Reason Why',
+        'The Queeen Gambit',
+        'Deadpool',
+        'Fast and Furious',
+        'w@p',
+        'La la land',
+        'Doc Co Cau Bai',
+        'Tam Quoc Chi',
+        'Trick Or Treat',
+        'Light It Up',
+        'The Aquaman without Amber Heard',
+        'The Boys',
+        'Spider Man: Homecoming',
+        'The Batman',
+      ];
+      const randomTrailer = [
+        'https://www.youtube.com/watch?v=9jrxLF_0dKA&t=347s',
+        'https://www.youtube.com/watch?v=6avJHaC3C2U',
+        'https://www.youtube.com/watch?v=IlU-zDU6aQ0',
+        'https://www.youtube.com/watch?v=VSceuiPBpxY',
+        'https://www.youtube.com/watch?v=9QiE-M1LrZk',
+        'https://www.youtube.com/watch?v=52nqjrCs57s',
+        'https://www.youtube.com/watch?v=gnkrDse9QKc',
+      ];
+      // Random năm, tháng, ngày tới ngày hiện tại
+      function randomDate(start: Date, end: Date) {
+        return new Date(
+          start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+        ).toDateString();
+      }
+      for (let i = 0; i < 50; i += 1) {
+        // random element bất kì trong mảng
+        const tenPhim =
+          randomTenPhim[Math.floor(Math.random() * randomTenPhim.length)];
+        const nhom = {
+          tenPhim,
+          trailer:
+            randomTrailer[Math.floor(Math.random() * randomTrailer.length)],
+          hinhAnh: `https://picsum.photos/id/${i}/200/300`, // Random image
+          moTa: 'Great Film',
+          ngayKhoiChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          // random float 5->0 làm tròn 1 chữ số -> string
+          danhGia: Math.round((Math.random() * (5 - 0) + 0) * 1e1) / 1e1,
+          daXoa: false,
+          biDanh: tenPhim.toLowerCase().split(' ').join('-'), // split dấu cách và nối bằng -
+        };
+        a.push(nhom);
+      }
+      await Promise.all(
+        a.map(async i => {
+          await this.phimRepo.create(i);
+        }),
+      );
+      console.log('Phim Seeded');
+    }
+  }
+  async createPhimTheLoai(): Promise<void> {
+    const existed = await this.phimTheLoaiRepo.find({
+      where: {
+        isbn: 1,
+      },
+    });
+    if (existed.length === 0) {
+      try {
+        const seededPhim = await this.phimRepo.find();
+        const seededTheLoai = await this.theLoaiRepo.find();
+        await Promise.all(
+          seededPhim.map(async i => {
+            const shuffleTheLoai = this.shuffleArray(seededTheLoai);
+            const randomNumOfTheLoai = Math.floor(
+              Math.random() * shuffleTheLoai.length,
+            );
+            const randomTheLoai = shuffleTheLoai.slice(randomNumOfTheLoai);
+            await Promise.all(
+              randomTheLoai.map(async tl => {
+                await this.phimRepo.phimtheloai(i.maPhim).link(tl.maTheLoai);
+              }),
+            );
+          }),
+        );
+        console.log('PhimTheLoai seeded');
+      } catch (e) {
+        console.log(e.message);
+      }
+    }
+  }
+  async createLichChieu(): Promise<void> {
+    const existed = await this.lichChieuRepo.count();
+    function randomDate(start: Date, end: Date) {
+      return new Date(
+        start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+      ).toDateString();
+    }
+    if (existed.count === 0) {
+      const lichChieu = [
+        {
+          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          giaVe: 42000,
+          thoiLuong: 120,
+          maRap: 3,
+          maCumRap: 'cgv-ndc',
+          maHeThongRap: 'CGV',
+          maPhim: 30,
+        },
+        {
+          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          giaVe: 50000,
+          thoiLuong: 120,
+          maRap: 5,
+          maCumRap: 'bhd-hvt',
+          maHeThongRap: 'BHDStar',
+          maPhim: 12,
+        },
+        {
+          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          giaVe: 35000,
+          thoiLuong: 120,
+          maRap: 4,
+          maCumRap: 'cgv-3/2',
+          maHeThongRap: 'CGV',
+          maPhim: 42,
+        },
+        {
+          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          giaVe: 40000,
+          thoiLuong: 120,
+          maRap: 7,
+          maCumRap: 'bhd-kdv',
+          maHeThongRap: 'BHDStar',
+          maPhim: 30,
+        },
+        {
+          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          giaVe: 60000,
+          thoiLuong: 120,
+          maRap: 3,
+          maCumRap: 'cgv-3/2',
+          maHeThongRap: 'CGV',
+          maPhim: 18,
+        },
+        {
+          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          giaVe: 55000,
+          thoiLuong: 120,
+          maRap: 1,
+          maCumRap: 'megags-cao-thang',
+          maHeThongRap: 'MegaGS',
+          maPhim: 10,
+        },
+      ];
+      for (const lc of lichChieu) {
+        await this.lichChieuRepo.create(lc);
+      }
+      console.log('LichChieu seeded');
+    }
+  }
   async hashPassword(password: string, rounds: number): Promise<string> {
     const salt = await genSalt(rounds);
     return hash(password, salt);
+  }
+  shuffleArray<T>(array: T[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+    return array;
   }
 }
