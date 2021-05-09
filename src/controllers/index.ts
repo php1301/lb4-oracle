@@ -20,3 +20,4 @@ export * from './ve.controller';
 export * from './phim.controller';
 export * from './the-loai.controller';
 export * from './lich-chieu.controller';
+export * from './ghe.controller';
