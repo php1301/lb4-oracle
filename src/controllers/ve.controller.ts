@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {inject} from '@loopback/context';
 import {
   Count,
@@ -6,20 +7,24 @@ import {
   FilterExcludingWhere,
   IsolationLevel,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
+  del, get,
+  getModelSchemaRef, param,
+
+
+  patch, post,
+
+
+
+
   put,
-  del,
+
   requestBody,
   response,
-  RestBindings,
-  Response,
+
+  Response, RestBindings
 } from '@loopback/rest';
 import {VeResponse} from '../@types/ve-response';
 import {Ghe, Ve} from '../models';
@@ -66,21 +71,36 @@ export class VeController {
   ): Promise<VeResponse> {
     // ACID Properties
     const {ghe} = veGhe;
+    let tongTienVe: any = 0;
+    const sql = `
+    select VE_TINHTIEN(:p1, :p2) as tong from dual
+    `;
     const transaction = await this.veRepository.dataSource.beginTransaction(
       IsolationLevel.SERIALIZABLE,
     );
     let res: VeResponse = {};
     try {
       console.log(veGhe);
+      await Promise.all(
+        ghe.map(async (i: Ghe) => {
+          const tien = (await this.veRepository.execute(
+            sql,
+            [i.maGhe, veGhe.giaVe],
+            {
+              transaction,
+            },
+          )) as any;
+          console.log(tien[0].TONG)
+          tongTienVe += tien[0].TONG;
+        }),
+      );
       const veData = {
         ngayDat: new Date().toDateString(),
-        giaVe: veGhe.giaVe,
+        giaVe: tongTienVe,
         maLichChieu: veGhe.maLichChieu,
         taiKhoan: veGhe.taiKhoan,
       };
       const v = await this.veRepository.create(veData, {transaction});
-      // Viet trigger kiem tra ve da duoc dat chua
-      // Neu da dat thi set kichHoat thanh true
       await Promise.all(
         ghe.map(async (i: Ghe) => {
           await this.datVeRepository.create(
