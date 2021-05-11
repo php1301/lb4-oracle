@@ -4,15 +4,25 @@ import {
   UserService,
 } from '@loopback/authentication';
 import {inject} from '@loopback/core';
-import {model, property, repository} from '@loopback/repository';
+import {
+  Filter,
+  FilterExcludingWhere,
+  model,
+  property,
+  repository,
+} from '@loopback/repository';
 import {
   get,
+  patch,
   getModelSchemaRef,
   HttpErrors,
   post,
   requestBody,
   RequestBodyObject,
+  response,
   SchemaObject,
+  param,
+  Request,
 } from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {genSalt, hash, compare} from 'bcryptjs';
@@ -23,8 +33,9 @@ import {
 } from '../components/jwt-authentication';
 import {Users} from '../models';
 import {UsersRepository} from '../repositories';
-import {doiPasswordRequest} from './dto/user.dto';
-
+import {doiPasswordRequest, uploadAvatarRequest} from './dto/user.dto';
+import fs from 'fs';
+const multiparty = require('multiparty');
 @model()
 export class NewUserRequest extends Users {
   @property({
@@ -221,5 +232,98 @@ export class UserController {
       .create({password});
 
     return savedUser;
+  }
+  // @authenticate('jwt')
+  @get('/users')
+  @response(200, {
+    description: 'Array of User instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Users),
+        },
+      },
+    },
+  })
+  async find(@param.filter(Users) filter?: Filter<Users>): Promise<Users[]> {
+    return this.userRepository.find(filter);
+  }
+
+  @get('/user/{id}')
+  @response(200, {
+    description: 'User model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Users),
+      },
+    },
+  })
+  async findById(
+    @param.path.number('id') id: number,
+    @param.filter(Users, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Users>,
+  ): Promise<Users> {
+    return this.userRepository.findById(id, filter);
+  }
+
+  @patch('/user/{id}')
+  @response(204, {
+    description: 'User PATCH success',
+  })
+  async updateById(
+    @param.path.number('id') id: number,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Users, {partial: true}),
+        },
+      },
+    })
+    user: Users,
+  ): Promise<void> {
+    await this.userRepository.updateById(id, user);
+  }
+  @patch('/user/{id}/avatar')
+  @response(204, {
+    description: 'Update Avatar User imgur',
+  })
+  async updateAvatar(
+    @param.path.number('id') id: number,
+    @requestBody.file()
+    request: Request,
+  ): Promise<void> {
+    // console.log(request);
+    try {
+      const handler = new multiparty.Form();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let img: string = '';
+      handler.parse(
+        request,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (err: any, fields: any, files: any) => {
+          if (err) {
+            throw err;
+          } else {
+            img = files
+          }
+        },
+      );
+      console.log(img);
+      const encodeImg = img.toString();
+      console.log(encodeImg);
+      //   const imgurRequest = {
+      //     headers: {
+      //       Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
+      //       'Content-Type': 'multipart/form-data',
+      //     },
+      //     body: request,
+      //     url: 'https://api.imgur.com/3/upload',
+      //   };
+      //   const test = await fetch('https://api.imgur.com/3/upload', imgurRequest);
+      //   // await this.userRepository.updateById(id, {});
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
