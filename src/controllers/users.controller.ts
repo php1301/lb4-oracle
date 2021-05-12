@@ -301,7 +301,7 @@ export class UserController {
     @requestBody.file()
     req: Request,
     @inject(RestBindings.Http.RESPONSE) res: Response,
-  ): Promise<string> {
+  ): Promise<object> {
     // console.log(request);
     const file = await new Promise<object>((resolve, reject) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -339,7 +339,7 @@ export class UserController {
       // );
       // // eslint-disable-next-line @typescript-eslint/no-explicit-any
       // const token = data.data.access_token;
-      
+
       */
       // https://github.com/expressjs/multer/issues/898
       // console.log((<any>file).files[0]?.stream);
@@ -365,10 +365,10 @@ export class UserController {
       await this.userRepository.updateById(id, {
         avatar: imageLink,
       });
-      return imageLink;
+      return {imageUrl: imageLink};
     } catch (e) {
       console.log(e.response);
-      return 'imageLink';
+      return {message: 'Failed to upload image'};
     }
   }
   private static getFilesAndFields(request: Request) {
