@@ -17,3 +17,14 @@ export const doiPasswordRequest: Partial<RequestBodyObject> = {
     },
   },
 };
+
+export const uploadAvatarRequest: Partial<RequestBodyObject> = {
+  description: 'Request doi avatar',
+  content: {
+    'multipart/form-data': {
+      // Skip body parsing
+      'x-parser': 'stream',
+      schema: {type: 'object'},
+    },
+  },
+};
