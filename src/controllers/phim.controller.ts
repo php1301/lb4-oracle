@@ -23,7 +23,7 @@ import {PhimRepository} from '../repositories';
 export class PhimController {
   constructor(
     @repository(PhimRepository)
-    public phimRepository : PhimRepository,
+    public phimRepository: PhimRepository,
   ) {}
 
   @post('/phim')
@@ -37,7 +37,8 @@ export class PhimController {
         'application/json': {
           schema: getModelSchemaRef(Phim, {
             title: 'NewPhim',
-            
+            partial: true,
+            exclude: ['maPhim'],
           }),
         },
       },
@@ -52,9 +53,7 @@ export class PhimController {
     description: 'Phim model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Phim) where?: Where<Phim>,
-  ): Promise<Count> {
+  async count(@param.where(Phim) where?: Where<Phim>): Promise<Count> {
     return this.phimRepository.count(where);
   }
 
@@ -70,9 +69,7 @@ export class PhimController {
       },
     },
   })
-  async find(
-    @param.filter(Phim) filter?: Filter<Phim>,
-  ): Promise<Phim[]> {
+  async find(@param.filter(Phim) filter?: Filter<Phim>): Promise<Phim[]> {
     return this.phimRepository.find(filter);
   }
 
@@ -106,7 +103,7 @@ export class PhimController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Phim, {exclude: 'where'}) filter?: FilterExcludingWhere<Phim>
+    @param.filter(Phim, {exclude: 'where'}) filter?: FilterExcludingWhere<Phim>,
   ): Promise<Phim> {
     return this.phimRepository.findById(id, filter);
   }
@@ -120,7 +117,10 @@ export class PhimController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Phim, {partial: true}),
+          schema: getModelSchemaRef(Phim, {
+            partial: true,
+            exclude: ['maPhim'],
+          }),
         },
       },
     })
