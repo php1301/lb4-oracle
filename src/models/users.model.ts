@@ -36,7 +36,11 @@ export class Users extends Entity {
     type: 'string',
   })
   hoTen?: string;
-
+  @property({
+    type: 'string',
+    default: 'https://i.pravatar.cc/300'
+  })
+  avatar?: string
   // Relations
   @belongsTo(() => LoaiNguoiDung, {name: 'loaiNguoiDung'})
   maLoaiNguoiDung: number;
