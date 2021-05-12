@@ -315,28 +315,32 @@ export class UserController {
     });
     console.log(file);
     try {
-      const requestAccessTokenData = new FormData();
-      requestAccessTokenData.append('refresh_token', process.env.REFRESH_TOKEN);
-      requestAccessTokenData.append('client_id', process.env.IMGUR_CLIENT_ID);
-      requestAccessTokenData.append(
-        'client_secret',
-        process.env.IMGUR_CLIENT_SECRET,
-      );
-      requestAccessTokenData.append('grant_type', 'refresh_token');
+      /* REQUEST TOKEN FOR USER'S IMGUR ACCOUNT
 
-      const requestTokenConfig = {
-        headers: {
-          ...requestAccessTokenData.getHeaders(),
-        },
-      };
+      // const requestAccessTokenData = new FormData();
+      // requestAccessTokenData.append('refresh_token', process.env.REFRESH_TOKEN);
+      // requestAccessTokenData.append('client_id', process.env.IMGUR_CLIENT_ID);
+      // requestAccessTokenData.append(
+      //   'client_secret',
+      //   process.env.IMGUR_CLIENT_SECRET,
+      // );
+      // requestAccessTokenData.append('grant_type', 'refresh_token');
 
-      const data = await axios.post(
-        'https://api.imgur.com/oauth2/token',
-        requestAccessTokenData,
-        requestTokenConfig,
-      );
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const token = data.data.access_token;
+      // const requestTokenConfig = {
+      //   headers: {
+      //     ...requestAccessTokenData.getHeaders(),
+      //   },
+      // };
+
+      // const data = await axios.post(
+      //   'https://api.imgur.com/oauth2/token',
+      //   requestAccessTokenData,
+      //   requestTokenConfig,
+      // );
+      // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // const token = data.data.access_token;
+      
+      */
       // https://github.com/expressjs/multer/issues/898
       // console.log((<any>file).files[0]?.stream);
       // Any cast
