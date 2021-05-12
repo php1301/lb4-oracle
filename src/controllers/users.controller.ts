@@ -13,19 +13,23 @@ import {
 } from '@loopback/repository';
 import {
   get,
-  patch,
   getModelSchemaRef,
   HttpErrors,
+  param,
+  patch,
   post,
+  Request,
   requestBody,
   RequestBodyObject,
   response,
+  Response,
+  RestBindings,
   SchemaObject,
-  param,
-  Request,
 } from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {genSalt, hash, compare} from 'bcryptjs';
+import {compare, genSalt, hash} from 'bcryptjs';
+import {FILE_UPLOAD_SERVICE} from '../keys';
+import {FileUploadHandler} from '../types';
 import {
   Credentials,
   TokenServiceBindings,
@@ -33,9 +37,9 @@ import {
 } from '../components/jwt-authentication';
 import {Users} from '../models';
 import {UsersRepository} from '../repositories';
-import {doiPasswordRequest, uploadAvatarRequest} from './dto/user.dto';
-import fs from 'fs';
-const multiparty = require('multiparty');
+import {doiPasswordRequest} from '../dto/user.dto';
+import FormData from 'form-data';
+import axios from 'axios';
 @model()
 export class NewUserRequest extends Users {
   @property({
@@ -77,6 +81,7 @@ export class UserController {
     @inject(SecurityBindings.USER, {optional: true})
     public user: UserProfile,
     @repository(UsersRepository) protected userRepository: UsersRepository,
+    @inject(FILE_UPLOAD_SERVICE) private handler: FileUploadHandler,
   ) {}
   // Dang le xe su ly trong service
   // Nhung service cua loopback bind singleton - User
@@ -276,11 +281,14 @@ export class UserController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Users, {partial: true}),
+          schema: getModelSchemaRef(Users, {
+            partial: true,
+            exclude: ['taiKhoan', 'password'],
+          }),
         },
       },
     })
-    user: Users,
+    user: Omit<Users, 'taiKhoan' | 'password'>,
   ): Promise<void> {
     await this.userRepository.updateById(id, user);
   }
@@ -291,39 +299,94 @@ export class UserController {
   async updateAvatar(
     @param.path.number('id') id: number,
     @requestBody.file()
-    request: Request,
-  ): Promise<void> {
+    req: Request,
+    @inject(RestBindings.Http.RESPONSE) res: Response,
+  ): Promise<string> {
     // console.log(request);
-    try {
-      const handler = new multiparty.Form();
+    const file = await new Promise<object>((resolve, reject) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let img: string = '';
-      handler.parse(
-        request,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (err: any, fields: any, files: any) => {
-          if (err) {
-            throw err;
-          } else {
-            img = files
-          }
+      this.handler(req, res, (err: any) => {
+        if (err) reject(err);
+        else {
+          const value = resolve(UserController.getFilesAndFields(req));
+          return value;
+        }
+      });
+    });
+    console.log(file);
+    try {
+      const requestAccessTokenData = new FormData();
+      requestAccessTokenData.append('refresh_token', process.env.REFRESH_TOKEN);
+      requestAccessTokenData.append('client_id', process.env.IMGUR_CLIENT_ID);
+      requestAccessTokenData.append(
+        'client_secret',
+        process.env.IMGUR_CLIENT_SECRET,
+      );
+      requestAccessTokenData.append('grant_type', 'refresh_token');
+
+      const requestTokenConfig = {
+        headers: {
+          ...requestAccessTokenData.getHeaders(),
+        },
+      };
+
+      const data = await axios.post(
+        'https://api.imgur.com/oauth2/token',
+        requestAccessTokenData,
+        requestTokenConfig,
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const token = data.data.access_token;
+      // https://github.com/expressjs/multer/issues/898
+      // console.log((<any>file).files[0]?.stream);
+      // Any cast
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const buffer = (<any>file).files[0]?.buffer;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const fileName = (<any>file).files[0]?.originalname;
+      const imgurForm = new FormData();
+      imgurForm.append('image', buffer, {filename: fileName});
+      imgurForm.append('type', 'file');
+      const result = await axios.post(
+        'https://api.imgur.com/3/upload',
+        imgurForm,
+        {
+          headers: {
+            Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
+            ...imgurForm.getHeaders(),
+          },
         },
       );
-      console.log(img);
-      const encodeImg = img.toString();
-      console.log(encodeImg);
-      //   const imgurRequest = {
-      //     headers: {
-      //       Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      //     body: request,
-      //     url: 'https://api.imgur.com/3/upload',
-      //   };
-      //   const test = await fetch('https://api.imgur.com/3/upload', imgurRequest);
-      //   // await this.userRepository.updateById(id, {});
+      const imageLink = result.data.data.link;
+      await this.userRepository.updateById(id, {
+        avatar: imageLink,
+      });
+      return imageLink;
     } catch (e) {
-      console.log(e);
+      console.log(e.response);
+      return 'imageLink';
     }
+  }
+  private static getFilesAndFields(request: Request) {
+    const uploadedFiles = request.files;
+    const mapper = (f: globalThis.Express.Multer.File) => ({
+      fieldname: f.fieldname,
+      originalname: f.originalname,
+      encoding: f.encoding,
+      mimetype: f.mimetype,
+      size: f.size,
+      path: f.path,
+      buffer: f.buffer,
+      stream: f.stream,
+    });
+    let files: object[] = [];
+    if (Array.isArray(uploadedFiles)) {
+      files = uploadedFiles.map(mapper);
+    } else {
+      for (const filename in uploadedFiles) {
+        files.push(...uploadedFiles[filename].map(mapper));
+      }
+    }
+    return {files, fields: request.body};
   }
 }
