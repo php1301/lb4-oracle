@@ -23,7 +23,7 @@ import {LichChieuRepository} from '../repositories';
 export class LichChieuController {
   constructor(
     @repository(LichChieuRepository)
-    public lichChieuRepository : LichChieuRepository,
+    public lichChieuRepository: LichChieuRepository,
   ) {}
 
   @post('/lich-chieu')
@@ -37,12 +37,12 @@ export class LichChieuController {
         'application/json': {
           schema: getModelSchemaRef(LichChieu, {
             title: 'NewLichChieu',
-            
+            exclude: ['maLichChieu'],
           }),
         },
       },
     })
-    lichChieu: LichChieu,
+    lichChieu: Omit<LichChieu, "maLichChieu">,
   ): Promise<LichChieu> {
     return this.lichChieuRepository.create(lichChieu);
   }
@@ -106,7 +106,8 @@ export class LichChieuController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(LichChieu, {exclude: 'where'}) filter?: FilterExcludingWhere<LichChieu>
+    @param.filter(LichChieu, {exclude: 'where'})
+    filter?: FilterExcludingWhere<LichChieu>,
   ): Promise<LichChieu> {
     return this.lichChieuRepository.findById(id, filter);
   }
