@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {strict: false}})
+@model({settings: {strict: true}})
 export class LoaiGhe extends Entity {
   @property({
     type: 'number',
@@ -19,7 +19,7 @@ export class LoaiGhe extends Entity {
     type: 'string',
   })
   moTa?: string;
-  
+
   @property({
     type: 'number',
     default: 0,
