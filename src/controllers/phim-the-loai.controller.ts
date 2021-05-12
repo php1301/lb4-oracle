@@ -1,4 +1,4 @@
-import {theLoaiRequest} from './dto/phim-theloai.dto';
+import {theLoaiRequest} from '../dto/phim-theloai.dto';
 import {
   Count,
   CountSchema,
