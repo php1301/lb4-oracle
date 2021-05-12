@@ -3,7 +3,7 @@ import {TheLoai} from './the-loai.model';
 import {PhimTheLoai} from './phim-the-loai.model';
 import {LichChieu} from './lich-chieu.model';
 
-@model({settings: {strict: false}})
+@model({settings: {strict: true}})
 export class Phim extends Entity {
   @property({
     type: 'number',
