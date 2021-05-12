@@ -2,7 +2,7 @@ import {Entity, model, property, belongsTo} from '@loopback/repository';
 import {LoaiGhe} from './loai-ghe.model';
 import {Rap} from './rap.model';
 
-@model({settings: {strict: false}})
+@model({settings: {strict: true}})
 export class Ghe extends Entity {
   @property({
     type: 'number',
