@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {strict: false}})
+@model({settings: {strict: true}})
 export class TheLoai extends Entity {
   @property({
     type: 'number',
