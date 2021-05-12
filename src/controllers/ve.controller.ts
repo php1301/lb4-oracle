@@ -29,7 +29,7 @@ import {
 import {VeResponse} from '../@types/ve-response';
 import {Ghe, Ve} from '../models';
 import {DatVeRepository, VeRepository} from '../repositories';
-import {datVeRequest} from './dto/ve.dto';
+import {datVeRequest} from '../dto/ve.dto';
 
 export class VeController {
   constructor(
