@@ -279,6 +279,7 @@ export class UserController {
   async updateById(
     @param.path.number('id') id: number,
     @requestBody({
+      description: 'Update User Information by Id',
       content: {
         'application/json': {
           schema: getModelSchemaRef(Users, {
