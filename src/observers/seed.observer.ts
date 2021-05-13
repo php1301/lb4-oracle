@@ -126,15 +126,12 @@ export class SampleObserver implements LifeCycleObserver {
   async createLoaiNguoiDung(): Promise<void> {
     const loaiNguoiDung = [
       {
-        maLoaiNguoiDung: 1,
         tenLoai: 'Client',
       },
       {
-        maLoaiNguoiDung: 2,
         tenLoai: 'Admin',
       },
       {
-        maLoaiNguoiDung: 3,
         tenLoai: 'VIP',
       },
     ];

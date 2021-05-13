@@ -5,10 +5,9 @@ export class LoaiNguoiDung extends Entity {
   @property({
     type: 'number',
     id: true,
-    generated: false,
-    required: true,
+    generated: true,
   })
-  maLoaiNguoiDung: number;
+  maLoaiNguoiDung?: number;
 
   @property({
     type: 'string',

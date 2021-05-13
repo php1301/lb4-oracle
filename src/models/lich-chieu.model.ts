@@ -8,7 +8,7 @@ export class LichChieu extends Entity {
   @property({
     type: 'number',
     id: true,
-    generated: false,
+    generated: true,
   })
   maLichChieu?: number;
 

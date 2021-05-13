@@ -5,7 +5,7 @@ export class PhimTheLoai extends Entity {
   @property({
     type: 'number',
     id: true,
-    generated: false,
+    generated: true,
   })
   isbn?: number;
 

@@ -27,8 +27,8 @@ const mysqlConfig = {
   url: '',
   host: 'localhost',
   port: 3306,
-  user: 'root',
-  password: 'pinodien',
+  username: 'admin',
+  password: 'java123',
   database: 'doanjavalb',
 }
 // Observe application's life cycle to disconnect the datasource when

@@ -5,7 +5,7 @@ export class TheLoai extends Entity {
   @property({
     type: 'number',
     id: true,
-    generated: false,
+    generated: true,
   })
   maTheLoai?: number;
 
