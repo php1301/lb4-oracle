@@ -21,6 +21,16 @@ const config = {
   debug: true,
 };
 
+const mysqlConfig = {
+  name: 'db2',
+  connector: 'mysql',
+  url: '',
+  host: 'localhost',
+  port: 3306,
+  user: 'root',
+  password: 'pinodien',
+  database: 'doanjavalb',
+}
 // Observe application's life cycle to disconnect the datasource when
 // application is stopped. This allows the application to be shut down
 // gracefully. The `stop()` method is inherited from `juggler.DataSource`.
@@ -30,11 +40,11 @@ export class DbDataSource
   extends juggler.DataSource
   implements LifeCycleObserver {
   static dataSourceName = 'db';
-  static readonly defaultConfig = config;
+  static readonly defaultConfig = mysqlConfig;
 
   constructor(
     @inject('datasources.config.db', {optional: true})
-    dsConfig: object = config,
+    dsConfig: object = mysqlConfig,
   ) {
     super(dsConfig);
   }
