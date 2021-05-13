@@ -1,5 +1,13 @@
 # movie-heqt
+! Cac script cần có, trừ drop ra thì hãy chạy các script sau ở mysql trước
+``` sh
+create database doanjavalb;
+drop database doanjavalb;
 
+CREATE USER 'admin'@'localhost' IDENTIFIED WITH mysql_native_password  BY 'java123';
+GRANT ALL PRIVILEGES ON * . * TO 'admin'@'localhost';
+
+```
 This application is generated using [LoopBack 4 CLI](https://loopback.io/doc/en/lb4/Command-line-interface.html) with the
 [initial project layout](https://loopback.io/doc/en/lb4/Loopback-application-layout.html).
 
