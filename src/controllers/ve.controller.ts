@@ -12,23 +12,15 @@ import {
 import {
   del, get,
   getModelSchemaRef, param,
-
-
   patch, post,
-
-
-
-
   put,
-
   requestBody,
   response,
-
   Response, RestBindings
 } from '@loopback/rest';
 import {VeResponse} from '../@types/ve-response';
 import {Ghe, Ve} from '../models';
-import {DatVeRepository, VeRepository} from '../repositories';
+import {DatVeRepository, GheDaDatRepository, VeRepository} from '../repositories';
 import {datVeRequest} from '../dto/ve.dto';
 
 export class VeController {
@@ -37,7 +29,10 @@ export class VeController {
     public veRepository: VeRepository,
     @repository(DatVeRepository)
     public datVeRepository: DatVeRepository,
+    @repository(GheDaDatRepository)
+    public gheDaDatRepository: GheDaDatRepository,
     @inject(RestBindings.Http.RESPONSE) private res: Response,
+
   ) {}
 
   @post('/ve')
@@ -76,7 +71,7 @@ export class VeController {
     select VE_TINHTIEN(:p1, :p2) as tong from dual
     `;
     const transaction = await this.veRepository.dataSource.beginTransaction(
-      IsolationLevel.SERIALIZABLE,
+      IsolationLevel.READ_COMMITTED,
     );
     let res: VeResponse = {};
     try {
@@ -110,6 +105,13 @@ export class VeController {
             },
             {transaction},
           );
+          await this.gheDaDatRepository.create(
+            {
+              maGhe: i.maGhe,
+              maLichChieu: veData.maLichChieu,
+            },
+            {transaction}
+          )
         }),
       );
       await transaction.commit();
