@@ -220,13 +220,13 @@ export class SampleObserver implements LifeCycleObserver {
         },
         {
           maCumRap: 'bhd-kdv',
-          tenCumRap: 'BHD Kinh Duong Vuong',
+          tenCumRap: 'BHDStar Kinh Duong Vuong',
           thongTin: 'blabla',
           maHeThongRap: 'BHDStar',
         },
         {
           maCumRap: 'bhd-hvt',
-          tenCumRap: 'BHD Hoang Van Thu',
+          tenCumRap: 'BHDStar Hoang Van Thu',
           thongTin: 'blabla',
           maHeThongRap: 'BHDStar',
         },
@@ -355,7 +355,7 @@ export class SampleObserver implements LifeCycleObserver {
                 // Random maLoaiGhe
                 maLoaiGhe:
                   maLoaiGheArr[Math.floor(Math.random() * maLoaiGheArr.length)],
-                kichHoat: false,
+                // kichHoat: false,
               });
             } catch (e) {
               console.log(e);
