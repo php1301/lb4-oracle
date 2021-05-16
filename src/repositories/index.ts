@@ -12,3 +12,4 @@ export * from './phim-the-loai.repository';
 export * from './lich-chieu.repository';
 export * from './dat-ve.repository';
 export * from './ve.repository';
+export * from './ghe-da-dat.repository';

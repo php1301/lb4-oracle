@@ -1,7 +1,9 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
 import {Rap} from './rap.model';
 import {HeThongRap} from './he-thong-rap.model';
 import {CumRap} from './cum-rap.model';
+import {Ghe} from './ghe.model';
+import {GheDaDat} from './ghe-da-dat.model';
 
 @model()
 export class LichChieu extends Entity {
@@ -43,6 +45,9 @@ export class LichChieu extends Entity {
     type: 'number',
   })
   maPhim?: number;
+
+  @hasMany(() => Ghe, {through: {model: () => GheDaDat, keyFrom: 'maLichChieu', keyTo: 'maGhe'}})
+  ghedadat: Ghe[];
 
   constructor(data?: Partial<LichChieu>) {
     super(data);
