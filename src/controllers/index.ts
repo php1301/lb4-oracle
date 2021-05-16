@@ -21,3 +21,4 @@ export * from './phim.controller';
 export * from './the-loai.controller';
 export * from './lich-chieu.controller';
 export * from './ghe.controller';
+export * from './lich-chieu-ghe.controller';
