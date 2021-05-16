@@ -338,11 +338,11 @@ export class SampleObserver implements LifeCycleObserver {
       arr.map((value, index) => {
         // inti stt mỗi rạp
         let stt = 0;
-        const alphabet = ['A', 'B', 'C', 'D', 'E', 'F'];
+        const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I','J'];
         alphabet.map(alpha => {
           // Có thể random seat số lượng ghế mỗi hàng từ 10 ~ 12
           // const arrSeats = [...Array(Math.floor(Math.random() * 15) + 1)]; // random từ 1 đến 15
-          const arrSeats = [...Array(Math.floor(Math.random() * 15) + 10)];
+          const arrSeats = [...Array(12)];
           return arrSeats.map(async (seat, seatIndex) => {
             stt += 1;
             try {
