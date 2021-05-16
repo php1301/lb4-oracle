@@ -23,11 +23,11 @@ export class Ghe extends Entity {
   })
   stt: number;
 
-  @property({
-    type: 'boolean',
-    required: true,
-  })
-  kichHoat: boolean;
+  // @property({
+  //   type: 'boolean',
+  //   required: true,
+  // })
+  // kichHoat: boolean;
 
   @belongsTo(() => LoaiGhe, {name: 'gheLoaiGhe'})
   maLoaiGhe: number;

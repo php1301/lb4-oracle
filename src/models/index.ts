@@ -12,3 +12,4 @@ export * from './phim-the-loai.model';
 export * from './lich-chieu.model';
 export * from './ve.model';
 export * from './dat-ve.model';
+export * from './ghe-da-dat.model';
