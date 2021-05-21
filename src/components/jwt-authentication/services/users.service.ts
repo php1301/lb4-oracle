@@ -29,7 +29,9 @@ export class MyUserService implements UserService<Users, Credentials> {
       throw new HttpErrors.Unauthorized(invalidCredentialsError);
     }
 
-    const credentialsFound = await this.userRepository.findCredentials(foundUser.taiKhoan);
+    const credentialsFound = await this.userRepository.findCredentials(
+      foundUser.taiKhoan,
+    );
     if (!credentialsFound) {
       throw new HttpErrors.Unauthorized(invalidCredentialsError);
     }
@@ -49,9 +51,11 @@ export class MyUserService implements UserService<Users, Credentials> {
   convertToUserProfile(user: Users): UserProfile {
     return {
       [securityId]: user.taiKhoan.toString(),
-      name: user.username,
+      username: user.username,
       id: user.taiKhoan,
       email: user.email,
+      avatar: user.avatar,
+      maLoaiNguoiDung: user.maLoaiNguoiDung,
     };
   }
 }
