@@ -3,7 +3,7 @@ import {
   CoreBindings,
   inject,
   lifeCycleObserver,
-  LifeCycleObserver,
+  LifeCycleObserver
 } from '@loopback/core';
 // Copyright IBM Corp. 2020. All Rights Reserved.
 // Node module: @loopback/example-access-control-migration
@@ -21,7 +21,7 @@ import {
   PhimTheLoaiRepository,
   RapRepository,
   TheLoaiRepository,
-  UsersRepository,
+  UsersRepository
 } from '../repositories';
 
 /**
@@ -262,37 +262,37 @@ export class SampleObserver implements LifeCycleObserver {
           tenHeThongRap: 'BHD Star Cineplex',
           biDanh: 'bhd-star-cineplex',
           logo:
-            'http://movie0706.cybersoft.edu.vn/hinhanh/bhd-star-cineplex.png',
+            'https://i.imgur.com/SrTrhaq.png',
         },
         {
           maHeThongRap: 'CGV',
           tenHeThongRap: 'cgv',
           biDanh: 'bhd-star-cineplex',
-          logo: 'http://movie0706.cybersoft.edu.vn/hinhanh/cgv.png',
+          logo: 'https://i.imgur.com/9pXuk9f.png',
         },
         {
           maHeThongRap: 'CineStar',
           tenHeThongRap: 'CineStar',
           biDanh: 'cinestar',
-          logo: 'http://movie0706.cybersoft.edu.vn/hinhanh/cinestar.png',
+          logo: 'https://i.imgur.com/GSw0tHJ.png',
         },
         {
           maHeThongRap: 'GalaxyCinema',
           tenHeThongRap: 'Galaxy Cinema',
           biDanh: 'galaxy-cinema',
-          logo: 'http://movie0706.cybersoft.edu.vn/hinhanh/galaxy-cinema.png',
+          logo: 'https://i.imgur.com/GWImlrr.png',
         },
-        {
-          maHeThongRap: 'LotteCinema',
-          tenHeThongRap: 'LotteCinema',
-          biDanh: 'lotte-cinema',
-          logo: 'http://movie0706.cybersoft.edu.vn/hinhanh/LotteCinema.png',
-        },
+        // {
+        //   maHeThongRap: 'LotteCinema',
+        //   tenHeThongRap: 'LotteCinema',
+        //   biDanh: 'lotte-cinema',
+        //   logo: 'http://movie0706.cybersoft.edu.vn/hinhanh/LotteCinema.png',
+        // },
         {
           maHeThongRap: 'MegaGS',
           tenHeThongRap: 'MegaGS',
           biDanh: 'megags',
-          logo: 'http://movie0706.cybersoft.edu.vn/hinhanh/megags.png',
+          logo: 'https://i.imgur.com/fCA12OC.png',
         },
       ];
       for (const h of heThongRap) {
@@ -445,7 +445,7 @@ export class SampleObserver implements LifeCycleObserver {
             randomTrailer[Math.floor(Math.random() * randomTrailer.length)],
           hinhAnh: `https://picsum.photos/id/${i}/200/300`, // Random image
           moTa: 'Great Film',
-          ngayKhoiChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayKhoiChieu: randomDate(new Date(2020, 1, 1), new Date(2020, 12, 31)),
           // random float 5->0 làm tròn 1 chữ số -> string
           danhGia: Math.round((Math.random() * (5 - 0) + 0) * 1e1) / 1e1,
           daXoa: false,
@@ -501,7 +501,7 @@ export class SampleObserver implements LifeCycleObserver {
     if (existed.count === 0) {
       const lichChieu = [
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieuGioChieu: randomDate(new Date(2021, 1, 1), new Date()),
           giaVe: 42000,
           thoiLuong: 120,
           maRap: 3,
@@ -510,7 +510,16 @@ export class SampleObserver implements LifeCycleObserver {
           maPhim: 30,
         },
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieuGioChieu: randomDate(new Date(2021, 1, 1), new Date()),
+          giaVe: 42000,
+          thoiLuong: 120,
+          maRap: 3,
+          maCumRap: 'cgv-ndc',
+          maHeThongRap: 'CGV',
+          maPhim: 30,
+        },
+        {
+          ngayChieuGioChieu: randomDate(new Date(2021, 1, 1), new Date()),
           giaVe: 50000,
           thoiLuong: 120,
           maRap: 5,
@@ -519,7 +528,7 @@ export class SampleObserver implements LifeCycleObserver {
           maPhim: 12,
         },
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieuGioChieu: randomDate(new Date(2021, 1, 1), new Date()),
           giaVe: 35000,
           thoiLuong: 120,
           maRap: 4,
@@ -528,7 +537,7 @@ export class SampleObserver implements LifeCycleObserver {
           maPhim: 42,
         },
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieuGioChieu: randomDate(new Date(2021, 1, 1), new Date()),
           giaVe: 40000,
           thoiLuong: 120,
           maRap: 7,
@@ -537,7 +546,25 @@ export class SampleObserver implements LifeCycleObserver {
           maPhim: 30,
         },
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieuGioChieu: randomDate(new Date(2021, 1, 1), new Date()),
+          giaVe: 40000,
+          thoiLuong: 120,
+          maRap: 7,
+          maCumRap: 'bhd-kdv',
+          maHeThongRap: 'BHDStar',
+          maPhim: 30,
+        },
+        {
+          ngayChieuGioChieu: randomDate(new Date(2021, 1, 1), new Date()),
+          giaVe: 40000,
+          thoiLuong: 120,
+          maRap: 7,
+          maCumRap: 'bhd-kdv',
+          maHeThongRap: 'BHDStar',
+          maPhim: 30,
+        },
+        {
+          ngayChieuGioChieu: randomDate(new Date(2021, 1, 1), new Date()),
           giaVe: 60000,
           thoiLuong: 120,
           maRap: 3,
@@ -546,7 +573,7 @@ export class SampleObserver implements LifeCycleObserver {
           maPhim: 18,
         },
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieuGioChieu: randomDate(new Date(2021, 1, 1), new Date()),
           giaVe: 55000,
           thoiLuong: 120,
           maRap: 1,
