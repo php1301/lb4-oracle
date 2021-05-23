@@ -1,4 +1,4 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {belongsTo, Entity, model, property} from '@loopback/repository';
 import {LoaiGhe} from './loai-ghe.model';
 import {Rap} from './rap.model';
 
