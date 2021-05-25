@@ -1,7 +1,7 @@
 import {
   authenticate,
   TokenService,
-  UserService,
+  UserService
 } from '@loopback/authentication';
 import {inject} from '@loopback/core';
 import {
@@ -9,7 +9,7 @@ import {
   FilterExcludingWhere,
   model,
   property,
-  repository,
+  repository
 } from '@loopback/repository';
 import {
   get,
@@ -24,22 +24,22 @@ import {
   response,
   Response,
   RestBindings,
-  SchemaObject,
+  SchemaObject
 } from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import axios from 'axios';
 import {compare, genSalt, hash} from 'bcryptjs';
-import {FILE_UPLOAD_SERVICE} from '../keys';
-import {FileUploadHandler} from '../types';
+import FormData from 'form-data';
 import {
   Credentials,
   TokenServiceBindings,
-  UserServiceBindings,
+  UserServiceBindings
 } from '../components/jwt-authentication';
+import {doiPasswordRequest} from '../dto/user.dto';
+import {FILE_UPLOAD_SERVICE} from '../keys';
 import {Users} from '../models';
 import {UsersRepository} from '../repositories';
-import {doiPasswordRequest} from '../dto/user.dto';
-import FormData from 'form-data';
-import axios from 'axios';
+import {FileUploadHandler} from '../types';
 @model()
 export class NewUserRequest extends Users {
   @property({
@@ -107,7 +107,7 @@ export class UserController {
   })
   async login(
     @requestBody(CredentialsRequestBody) credentials: Credentials,
-  ): Promise<{token: string}> {
+  ): Promise<any> {
     // ensure the user exists, and the password is correct
     const user = await this.userService.verifyCredentials(credentials);
     // convert a Users object into a UserProfile object (reduced set of properties)
@@ -115,7 +115,7 @@ export class UserController {
 
     // create a JSON Web Token based on the user profile
     const token = await this.jwtService.generateToken(userProfile);
-    return {token};
+    return {token, ...userProfile};
   }
   @authenticate('jwt')
   @get('/whoAmI', {
@@ -229,14 +229,16 @@ export class UserController {
       },
     })
     newUserRequest: NewUserRequest,
-  ): Promise<Users> {
+  ): Promise<any> {
     const password = await hash(newUserRequest.password, await genSalt(10));
-    const savedUser = await this.userRepository.create(newUserRequest);
+    const savedUser = await this.userRepository.create({...newUserRequest, password});
+    const userProfile = this.userService.convertToUserProfile(savedUser);
+    const token = await this.jwtService.generateToken(userProfile);
     await this.userRepository
       .userCredentials(savedUser.taiKhoan)
       .create({password});
 
-    return savedUser;
+    return {token, ...userProfile};
   }
   // @authenticate('jwt')
   @get('/users')
