@@ -1,5 +1,7 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
 import {HeThongRap} from './he-thong-rap.model';
+import {LichChieu} from './lich-chieu.model';
+import {Rap} from './rap.model';
 
 @model({settings: {strict: true}})
 export class CumRap extends Entity {
@@ -21,6 +23,12 @@ export class CumRap extends Entity {
 
   @belongsTo(() => HeThongRap, {name: 'cumrap_hethongrap'})
   maHeThongRap: string;
+
+  @hasMany(() => LichChieu, {keyTo: 'maCumRap'})
+  lichChieuCumRap: LichChieu[];
+
+  @hasMany(() => Rap, {keyTo: 'maCumRap'})
+  rapCuaCumRap: Rap[];
   // Define well-known properties here
 
   // Indexer property to allow additional data
