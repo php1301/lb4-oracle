@@ -3,12 +3,12 @@ import {
   BelongsToAccessor,
   DefaultCrudRepository,
   HasOneRepositoryFactory,
-  repository,
-} from '@loopback/repository';
+  repository, HasManyRepositoryFactory} from '@loopback/repository';
 import {DbDataSource} from '../datasources';
-import {LoaiNguoiDung, UserCredentials, Users, UsersRelation} from '../models';
+import {LoaiNguoiDung, UserCredentials, Users, UsersRelation, Ve} from '../models';
 import {LoaiNguoiDungRepository} from './loai-nguoi-dung.repository';
 import {UserCredentialsRepository} from './user-credentials.repository';
+import {VeRepository} from './ve.repository';
 
 export class UsersRepository extends DefaultCrudRepository<
   Users,
@@ -25,14 +25,18 @@ export class UsersRepository extends DefaultCrudRepository<
     typeof Users.prototype.taiKhoan
   >;
 
+  public readonly veNguoiDung: HasManyRepositoryFactory<Ve, typeof Users.prototype.taiKhoan>;
+
   constructor(
     @inject('datasources.db') dataSource: DbDataSource,
     @repository.getter('UserCredentialsRepository')
     protected userCredentialsRepositoryGetter: Getter<UserCredentialsRepository>,
     @repository.getter('LoaiNguoiDungRepository')
-    protected loaiNguoiDungRepositoryGetter: Getter<LoaiNguoiDungRepository>,
+    protected loaiNguoiDungRepositoryGetter: Getter<LoaiNguoiDungRepository>, @repository.getter('VeRepository') protected veRepositoryGetter: Getter<VeRepository>,
   ) {
     super(Users, dataSource);
+    this.veNguoiDung = this.createHasManyRepositoryFactoryFor('veNguoiDung', veRepositoryGetter,);
+    this.registerInclusionResolver('veNguoiDung', this.veNguoiDung.inclusionResolver);
     this.loaiNguoiDung = this.createBelongsToAccessorFor(
       'loaiNguoiDung',
       loaiNguoiDungRepositoryGetter,
