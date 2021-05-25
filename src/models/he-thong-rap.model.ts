@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {CumRap} from './cum-rap.model';
 
 @model({settings: {strict: true}})
 export class HeThongRap extends Entity {
@@ -26,6 +27,8 @@ export class HeThongRap extends Entity {
   })
   logo: string;
 
+  @hasMany(() => CumRap, {keyTo: 'maHeThongRap'})
+  cacCumRapHeThongRap: CumRap[];
   // Define well-known properties here
 
   // Indexer property to allow additional data
