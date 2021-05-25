@@ -66,6 +66,13 @@ export class VeController {
   ): Promise<VeResponse> {
     // ACID Properties
     const {ghe} = veGhe;
+    const enumBonusCharge:{
+      [key: string]: number
+    } = {
+      T1: 0,
+      T2: 40000,
+      T3: 50000
+    }
     let tongTienVe: any = 0;
     const sql = `
     select VE_TINHTIEN(:p1, :p2) as tong from dual
@@ -86,14 +93,18 @@ export class VeController {
             },
           )) as any;
           console.log(tien[0].TONG)
-          tongTienVe += tien[0].TONG;
+          const chargeMore = enumBonusCharge[veGhe.loaiVe]
+          tongTienVe += (tien[0].TONG + chargeMore);
         }),
       );
       const veData = {
         ngayDat: new Date().toDateString(),
-        giaVe: tongTienVe,
+        giaVe: tongTienVe - veGhe.giamGia,
         maLichChieu: veGhe.maLichChieu,
+        giamGia: veGhe.giamGia,
+        loaiVe: veGhe.loaiVe,
         taiKhoan: veGhe.taiKhoan,
+        hinhAnh: veGhe.hinhAnh,
       };
       const v = await this.veRepository.create(veData, {transaction});
       await Promise.all(
@@ -120,9 +131,9 @@ export class VeController {
         ghe,
       };
     } catch (e) {
-      console.log(e);
       await transaction.rollback();
       res = {};
+      throw Error("Đặt ghế lỗi")
     }
     return res;
   }
@@ -223,3 +234,54 @@ export class VeController {
     await this.veRepository.deleteById(id);
   }
 }
+
+// {
+//   "fields": {
+//     "maVe": true,
+//     "ngayDat": true,
+//     "giaVe": true,
+//     "maLichChieu": true,
+//     "loaiVe": true,
+//     "hinhAnh": true,
+//     "taiKhoan": true
+//   },
+//   "include": [
+//     {
+//       "relation": "veLichChieu",
+//       "scope":{
+//         "fields": {
+//           "maLichChieu": true,
+//           "ngayChieuGioChieu": true,
+//           "maPhim": true,
+//           "maRap": true
+//         },
+//         "include": [
+//           {
+//             "relation": "lichChieuRap",
+//               "scope":{
+//               "fields": {
+//                 "maRap": true,
+//                 "tenRap": true,
+//                 "maCumRap": true
+//               },
+//               "include": [
+//                 {
+//                 "relation": "rap_cumRap",
+//                 "scope":{
+//                   "fields":{
+//                     "maCumRap": true,
+//                     "tenCumRap": true
+//                   }
+//               }
+//             }
+//             ]
+//           }
+//           },
+//           {
+//             "relation": "ghedadat"
+//           }
+//         ]
+//       }
+//     }
+//     ]
+//   }
