@@ -18,6 +18,15 @@ export const datVeRequest: Partial<RequestBodyObject> = {
           taiKhoan: {
             type: 'number',
           },
+          giamGia: {
+            type: 'number',
+          },
+          loaiVe: {
+            type: 'string',
+          },
+          hinhAnh: {
+            type: 'string',
+          },
           ghe: {
             type: 'array',
             items: {
