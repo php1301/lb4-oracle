@@ -1,6 +1,7 @@
-import {belongsTo, Entity, hasOne, model, property} from '@loopback/repository';
+import {belongsTo, Entity, hasOne, model, property, hasMany} from '@loopback/repository';
 import {UserCredentials} from '.';
 import {LoaiNguoiDung} from './loai-nguoi-dung.model';
+import {Ve} from './ve.model';
 
 @model({settings: {}})
 export class Users extends Entity {
@@ -44,6 +45,9 @@ export class Users extends Entity {
   // Relations
   @belongsTo(() => LoaiNguoiDung, {name: 'loaiNguoiDung'})
   maLoaiNguoiDung: number;
+
+  @hasMany(() => Ve, {keyTo: 'taiKhoan'})
+  veNguoiDung: Ve[];
   @hasOne(() => UserCredentials, {keyTo: 'taiKhoan'})
   userCredentials: UserCredentials;
 
