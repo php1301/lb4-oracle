@@ -24,6 +24,21 @@ export class Ve extends Entity {
     required: true,
   })
   giaVe: number;
+  @property({
+    type: 'number',
+    default: 0,
+  })
+  giamGia: number;
+
+  @property({
+    type: 'string',
+    default: "T1",
+  })
+  loaiVe: string;
+  @property({
+    type: 'string',
+  })
+  hinhAnh: string;
 // O FE se tao ra cac o box render dung data chon He Thong Rap
 // O CSDL se tao trigger de check xem heThong, cumRap va rap co lien quan ko
 // Tang tinh bao mat
