@@ -335,7 +335,7 @@ export class SampleObserver implements LifeCycleObserver {
       arr.map((value, index) => {
         // inti stt mỗi rạp
         let stt = 0;
-        const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I','J'];
+        const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         alphabet.map(alpha => {
           // Có thể random seat số lượng ghế mỗi hàng từ 10 ~ 12
           // const arrSeats = [...Array(Math.floor(Math.random() * 15) + 1)]; // random từ 1 đến 15
@@ -446,6 +446,7 @@ export class SampleObserver implements LifeCycleObserver {
           // random float 5->0 làm tròn 1 chữ số -> string
           danhGia: Math.round((Math.random() * (5 - 0) + 0) * 1e1) / 1e1,
           daXoa: false,
+          thoiLuong: this.randomIntFromInterval(80, 240),
           biDanh: tenPhim.toLowerCase().split(' ').join('-'), // split dấu cách và nối bằng -
         };
         a.push(nhom);
@@ -570,5 +571,8 @@ export class SampleObserver implements LifeCycleObserver {
       array[j] = temp;
     }
     return array;
+  }
+  randomIntFromInterval(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 }

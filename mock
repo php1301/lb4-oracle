@@ -14,7 +14,7 @@
 
 {
   "email": "test12345@gmail.com",
-  "password": "test1234"
+  "password": "test12345"
 }
 
     "prestart": "npm run rebuild",
@@ -25,12 +25,18 @@ nEY04HKBj8S0iWbNiAqgfQtTLiMjbm002Ro-Cp1PM9Bi
 
 {
   "ngayDat": "string",
-  "giaVe": 3000,
-  "maLichChieu": 49,
+  "giaVe": 20000,
+  "maLichChieu": 45,
   "taiKhoan": 2,
   "ghe": [
     {
-      "maGhe": "string"
+      "maGhe": 4
+    },
+    {
+      "maGhe": 5
+    },
+    {
+      "maGhe": 6
     }
   ]
 }
@@ -56,4 +62,12 @@ TRIGGER
 Stored Procedure
 1. Query toan bo lich chieu cua he thong rap -> cumrap -> rap
 2. Goi Y HeThongRap -> CumRap -> Rap cho combobox
-3. Tinh tien ve (nghien cuu them goi stored procedure o nodejs), tien ve se = tien cua cac ghe(base on loaiGhe) + loai
+Function
+1. Tinh tien ghe (nghien cuu them goi stored procedure o nodejs), tien ve se = tien cua cac ghe(base on loaiGhe) + loai
+
+ngrok authtoken 1sGJpdKN8DsBvXTmMVuqNbtYC5z_3Kw3sWfAvdiDYnAKxW698
+ngrok http -host-header="[::1]:3000" 3000
+87de5c9b89abd79b203bc51be577b68d5dba862f
+
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'java123';
+GRANT ALL PRIVILEGES ON * . * TO 'admin'@'localhost';

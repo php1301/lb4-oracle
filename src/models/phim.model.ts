@@ -49,6 +49,12 @@ export class Phim extends Entity {
   danhGia: number;
 
   @property({
+    type: 'number',
+    required: true,
+  })
+  thoiLuong: number;
+
+  @property({
     type: 'string',
     required: true,
   })

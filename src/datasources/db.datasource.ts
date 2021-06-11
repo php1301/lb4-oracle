@@ -27,7 +27,7 @@ const mysqlConfig = {
   url: '',
   host: 'localhost',
   port: 3306,
-  username: 'admin',
+  username: 'admin2',
   password: 'java123',
   database: 'doanjavalb',
 }
