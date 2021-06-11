@@ -394,12 +394,9 @@ export class SampleObserver implements LifeCycleObserver {
     }
   }
   async createPhim(): Promise<void> {
-    const existed = await this.phimRepo.find({
-      where: {
-        maPhim: 1,
-      },
-    });
-    if (existed.length === 0) {
+    const existed = await this.phimRepo.count();
+    console.log(existed.count);
+    if (existed.count < 50) {
       const a = [];
       const randomTenPhim = [
         '13 Reason Why',
@@ -432,7 +429,7 @@ export class SampleObserver implements LifeCycleObserver {
           start.getTime() + Math.random() * (end.getTime() - start.getTime()),
         ).toDateString();
       }
-      for (let i = 0; i < 50; i += 1) {
+      for (let i = existed.count; i < 50; i += 1) {
         // random element bất kì trong mảng
         const tenPhim =
           randomTenPhim[Math.floor(Math.random() * randomTenPhim.length)];
