@@ -91,25 +91,76 @@ export class SampleObserver implements LifeCycleObserver {
       },
     });
     if (existed.length === 0) {
+      function randomDate(start: Date, end: Date) {
+        return new Date(
+          start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+        ).toDateString();
+      }
       const hashedPassword = await this.hashPassword('test12345', 10);
       const users = [
         {
           username: 'php1301',
-          email: 'test12345@gmail.com',
+          email: 'admin@gmail.com',
           password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
           maLoaiNguoiDung: 1,
         },
         {
           username: 'phuc',
           email: 'test123@gmail.com',
           password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
+          maLoaiNguoiDung: 2,
+        },
+        {
+          username: 'phuc',
+          email: 'test123@gmail.com',
+          password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
+          maLoaiNguoiDung: 2,
+        },
+        {
+          username: 'phuc',
+          email: 'test123@gmail.com',
+          password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
           maLoaiNguoiDung: 2,
         },
         {
           username: 'Bob',
           email: 'bob@projects.com',
           password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
           maLoaiNguoiDung: 3,
+        },
+        {
+          username: 'Bob',
+          email: 'bob1@projects.com',
+          password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
+          maLoaiNguoiDung: 3,
+        },
+        {
+          username: 'Bob',
+          email: 'bob2@projects.com',
+          password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
+          maLoaiNguoiDung: 5,
+        },
+        {
+          username: 'Bob',
+          email: 'bob3@projects.com',
+          password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
+          maLoaiNguoiDung: 6,
         },
       ];
 
@@ -126,13 +177,22 @@ export class SampleObserver implements LifeCycleObserver {
   async createLoaiNguoiDung(): Promise<void> {
     const loaiNguoiDung = [
       {
-        tenLoai: 'Client',
-      },
-      {
         tenLoai: 'Admin',
       },
       {
-        tenLoai: 'VIP',
+        tenLoai: 'Bình Thường',
+      },
+      {
+        tenLoai: 'Thân Thiết',
+      },
+      {
+        tenLoai: 'Bạc',
+      },
+      {
+        tenLoai: 'Vàng',
+      },
+      {
+        tenLoai: 'Kim Cương',
       },
     ];
     const existed = await this.loaiNguoiDungRepo.find({

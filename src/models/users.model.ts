@@ -29,6 +29,19 @@ export class Users extends Entity {
   email: string;
 
   @property({
+    type: 'date',
+    
+    required: true,
+  })
+  ngaySinh: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  diaChi: string;
+
+  @property({
     type: 'string',
   })
   soDT?: string;
@@ -38,9 +51,9 @@ export class Users extends Entity {
   hoTen?: string;
   @property({
     type: 'string',
-    default: 'https://i.pravatar.cc/300'
+    default: 'https://i.pravatar.cc/300',
   })
-  avatar?: string
+  avatar?: string;
   // Relations
   @belongsTo(() => LoaiNguoiDung, {name: 'loaiNguoiDung'})
   maLoaiNguoiDung: number;
