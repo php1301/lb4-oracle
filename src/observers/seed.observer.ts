@@ -566,12 +566,13 @@ export class SampleObserver implements LifeCycleObserver {
     function randomDate(start: Date, end: Date) {
       return new Date(
         start.getTime() + Math.random() * (end.getTime() - start.getTime()),
-      ).toDateString();
+      ).toLocaleDateString();
     }
     if (existed.count === 0) {
       const lichChieu = [
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          gioChieu: this.randomTime(),
           giaVe: 42000,
           thoiLuong: 120,
           maRap: 3,
@@ -580,7 +581,8 @@ export class SampleObserver implements LifeCycleObserver {
           maPhim: 30,
         },
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          gioChieu: this.randomTime(),
           giaVe: 50000,
           thoiLuong: 120,
           maRap: 5,
@@ -589,7 +591,8 @@ export class SampleObserver implements LifeCycleObserver {
           maPhim: 12,
         },
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          gioChieu: this.randomTime(),
           giaVe: 35000,
           thoiLuong: 120,
           maRap: 4,
@@ -598,7 +601,8 @@ export class SampleObserver implements LifeCycleObserver {
           maPhim: 42,
         },
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          gioChieu: this.randomTime(),
           giaVe: 40000,
           thoiLuong: 120,
           maRap: 7,
@@ -607,7 +611,8 @@ export class SampleObserver implements LifeCycleObserver {
           maPhim: 30,
         },
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          gioChieu: this.randomTime(),
           giaVe: 60000,
           thoiLuong: 120,
           maRap: 3,
@@ -616,7 +621,8 @@ export class SampleObserver implements LifeCycleObserver {
           maPhim: 18,
         },
         {
-          ngayChieuGioChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          ngayChieu: randomDate(new Date(2020, 1, 1), new Date()),
+          gioChieu: this.randomTime(),
           giaVe: 55000,
           thoiLuong: 120,
           maRap: 1,
@@ -647,4 +653,11 @@ export class SampleObserver implements LifeCycleObserver {
   randomIntFromInterval(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
+  randomTime = () => {
+    const hrs = Math.round(Math.random() * 12);
+    const mins = Math.round(Math.random() * 60);
+    const hFormat = hrs < 10 ? '0' : '';
+    const mFormat = mins < 10 ? '0' : '';
+    return String(hFormat + hrs + ':' + mFormat + mins + ':00');
+  };
 }

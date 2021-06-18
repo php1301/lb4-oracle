@@ -48,7 +48,7 @@ const mysqlRemoteConfig2 = {
   url: '',
   host: '103.97.125.254',
   port: 3306,
-  timeZone: 'UTC+07:00',
+  timeZone: '+07:00',
   username: 'doanjava',
   password: 'a2DpigCp7PDOyGk',
   database: 'doanjava_v1',
