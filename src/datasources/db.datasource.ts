@@ -30,7 +30,7 @@ const mysqlConfig = {
   username: 'admin2',
   password: 'java123',
   database: 'doanjavalb',
-}
+};
 const mysqlRemoteConfig = {
   name: 'db3',
   connector: 'mysql',
@@ -40,7 +40,7 @@ const mysqlRemoteConfig = {
   username: 'Rv7rkcnTMx',
   password: 'ZJ0Pp56kEi',
   database: 'Rv7rkcnTMx',
-}
+};
 
 const mysqlRemoteConfig2 = {
   name: 'db4',
@@ -48,10 +48,11 @@ const mysqlRemoteConfig2 = {
   url: '',
   host: '103.97.125.254',
   port: 3306,
+  timeZone: 'UTC+07:00',
   username: 'doanjava',
   password: 'a2DpigCp7PDOyGk',
   database: 'doanjava_v1',
-}
+};
 // Observe application's life cycle to disconnect the datasource when
 // application is stopped. This allows the application to be shut down
 // gracefully. The `stop()` method is inherited from `juggler.DataSource`.

@@ -215,38 +215,53 @@ export class SampleObserver implements LifeCycleObserver {
       const rap = [
         {
           tenRap: 'Rap 1',
-          soGhe: 40,
-          maCumRap: 'megags-cao-thang',
+          soGhe: 120,
+          maCumRap: 'bhd-hvt',
         },
         {
           tenRap: 'Rap 2',
-          soGhe: 50,
-          maCumRap: 'megags-cao-thang',
+          soGhe: 120,
+          maCumRap: 'bhd-hvt',
         },
         {
           tenRap: 'Rap 3',
-          soGhe: 60,
-          maCumRap: 'cgv-ndc',
+          soGhe: 120,
+          maCumRap: 'bhd-hvt',
         },
         {
           tenRap: 'Rap 4',
-          soGhe: 40,
-          maCumRap: 'cgv-3/2',
+          soGhe: 120,
+          maCumRap: 'bhd-hvt',
         },
         {
           tenRap: 'Rap 5',
-          soGhe: 30,
+          soGhe: 120,
           maCumRap: 'bhd-hvt',
         },
         {
           tenRap: 'Rap 6',
-          soGhe: 50,
+          soGhe: 120,
           maCumRap: 'bhd-hvt',
         },
         {
           tenRap: 'Rap 7',
-          soGhe: 40,
-          maCumRap: 'bhd-kdv',
+          soGhe: 120,
+          maCumRap: 'bhd-hvt',
+        },
+        {
+          tenRap: 'Rap 8',
+          soGhe: 120,
+          maCumRap: 'bhd-hvt',
+        },
+        {
+          tenRap: 'Rap 9',
+          soGhe: 120,
+          maCumRap: 'bhd-hvt',
+        },
+        {
+          tenRap: 'Rap 10',
+          soGhe: 120,
+          maCumRap: 'bhd-hvt',
         },
       ];
       for (const r of rap) {
@@ -390,7 +405,7 @@ export class SampleObserver implements LifeCycleObserver {
       },
     });
     if (existed.length === 0) {
-      const arr = [...Array(7)];
+      const arr = [...Array(10)];
       const maLoaiGheArr = [1, 2];
       arr.map((value, index) => {
         // inti stt mỗi rạp

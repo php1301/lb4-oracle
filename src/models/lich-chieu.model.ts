@@ -18,7 +18,13 @@ export class LichChieu extends Entity {
     type: 'date',
     required: true,
   })
-  ngayChieuGioChieu: string;
+  ngayChieu: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  gioChieu: string;
 
   @property({
     type: 'number',
