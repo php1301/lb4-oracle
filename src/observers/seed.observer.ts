@@ -3,7 +3,7 @@ import {
   CoreBindings,
   inject,
   lifeCycleObserver,
-  LifeCycleObserver
+  LifeCycleObserver,
 } from '@loopback/core';
 // Copyright IBM Corp. 2020. All Rights Reserved.
 // Node module: @loopback/example-access-control-migration
@@ -21,7 +21,7 @@ import {
   PhimTheLoaiRepository,
   RapRepository,
   TheLoaiRepository,
-  UsersRepository
+  UsersRepository,
 } from '../repositories';
 
 /**
@@ -92,24 +92,75 @@ export class SampleObserver implements LifeCycleObserver {
     });
     if (existed.length === 0) {
       const hashedPassword = await this.hashPassword('test12345', 10);
+      function randomDate(start: Date, end: Date) {
+        return new Date(
+          start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+        ).toDateString();
+      }
       const users = [
         {
           username: 'php1301',
-          email: 'test12345@gmail.com',
+          email: 'admin@gmail.com',
           password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
           maLoaiNguoiDung: 1,
         },
         {
-          username: 'phuc',
-          email: 'test123@gmail.com',
+          username: 'phuc1',
+          email: 'test1@gmail.com',
           password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
           maLoaiNguoiDung: 2,
         },
         {
-          username: 'Bob',
-          email: 'bob@projects.com',
+          username: 'phuc2',
+          email: 'test2@gmail.com',
           password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
+          maLoaiNguoiDung: 2,
+        },
+        {
+          username: 'phuc3',
+          email: 'test3@gmail.com',
+          password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
+          maLoaiNguoiDung: 2,
+        },
+        {
+          username: 'phuc4',
+          email: 'bob1@projects.com',
+          password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
           maLoaiNguoiDung: 3,
+        },
+        {
+          username: 'phuc5',
+          email: 'bob2@projects.com',
+          password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
+          maLoaiNguoiDung: 3,
+        },
+        {
+          username: 'phuc6',
+          email: 'bob3@projects.com',
+          password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
+          maLoaiNguoiDung: 5,
+        },
+        {
+          username: 'phuc7',
+          email: 'bob4@projects.com',
+          password: hashedPassword,
+          diaChi: '1/2/3 Q.Thu Duc KP6 PLinhTrung',
+          ngaySinh: randomDate(new Date(2000, 1, 1), new Date(2009, 31, 12)),
+          maLoaiNguoiDung: 6,
         },
       ];
 
@@ -126,16 +177,22 @@ export class SampleObserver implements LifeCycleObserver {
   async createLoaiNguoiDung(): Promise<void> {
     const loaiNguoiDung = [
       {
-        maLoaiNguoiDung: 1,
-        tenLoai: 'Client',
-      },
-      {
-        maLoaiNguoiDung: 2,
         tenLoai: 'Admin',
       },
       {
-        maLoaiNguoiDung: 3,
-        tenLoai: 'VIP',
+        tenLoai: 'Bình Thường',
+      },
+      {
+        tenLoai: 'Thân Thiết',
+      },
+      {
+        tenLoai: 'Bạc',
+      },
+      {
+        tenLoai: 'Vàng',
+      },
+      {
+        tenLoai: 'Kim Cương',
       },
     ];
     const existed = await this.loaiNguoiDungRepo.find({
@@ -261,8 +318,7 @@ export class SampleObserver implements LifeCycleObserver {
           maHeThongRap: 'BHDStar',
           tenHeThongRap: 'BHD Star Cineplex',
           biDanh: 'bhd-star-cineplex',
-          logo:
-            'https://i.imgur.com/SrTrhaq.png',
+          logo: 'https://i.imgur.com/SrTrhaq.png',
         },
         {
           maHeThongRap: 'CGV',
@@ -338,7 +394,7 @@ export class SampleObserver implements LifeCycleObserver {
       arr.map((value, index) => {
         // inti stt mỗi rạp
         let stt = 0;
-        const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I','J'];
+        const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         alphabet.map(alpha => {
           // Có thể random seat số lượng ghế mỗi hàng từ 10 ~ 12
           // const arrSeats = [...Array(Math.floor(Math.random() * 15) + 1)]; // random từ 1 đến 15
@@ -445,7 +501,10 @@ export class SampleObserver implements LifeCycleObserver {
             randomTrailer[Math.floor(Math.random() * randomTrailer.length)],
           hinhAnh: `https://picsum.photos/id/${i}/200/300`, // Random image
           moTa: 'Great Film',
-          ngayKhoiChieu: randomDate(new Date(2020, 1, 1), new Date(2020, 12, 31)),
+          ngayKhoiChieu: randomDate(
+            new Date(2020, 1, 1),
+            new Date(2020, 12, 31),
+          ),
           // random float 5->0 làm tròn 1 chữ số -> string
           danhGia: Math.round((Math.random() * (5 - 0) + 0) * 1e1) / 1e1,
           daXoa: false,

@@ -18,6 +18,7 @@ const config = {
   user: 'c##project',
   password: 'test123',
   database: 'orcl',
+  timeZone: '+07:00',
   debug: true,
 };
 

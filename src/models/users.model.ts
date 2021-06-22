@@ -1,4 +1,11 @@
-import {belongsTo, Entity, hasOne, model, property, hasMany} from '@loopback/repository';
+import {
+  belongsTo,
+  Entity,
+  hasMany,
+  hasOne,
+  model,
+  property,
+} from '@loopback/repository';
 import {UserCredentials} from '.';
 import {LoaiNguoiDung} from './loai-nguoi-dung.model';
 import {Ve} from './ve.model';
@@ -20,14 +27,39 @@ export class Users extends Entity {
 
   @property({
     type: 'string',
+    index: {
+      unique: true,
+    },
   })
   username?: string;
 
   @property({
     type: 'string',
     required: true,
+    index: {
+      unique: true,
+    },
   })
   email: string;
+  @property({
+    type: 'date',
+
+    required: true,
+  })
+  ngaySinh: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  diaChi: string;
+
+  @property({
+    type: 'number',
+    required: true,
+    default: 0,
+  })
+  diemTichLuy: number;
 
   @property({
     type: 'string',
@@ -39,9 +71,9 @@ export class Users extends Entity {
   hoTen?: string;
   @property({
     type: 'string',
-    default: 'https://i.pravatar.cc/300'
+    default: 'https://i.pravatar.cc/300',
   })
-  avatar?: string
+  avatar?: string;
   // Relations
   @belongsTo(() => LoaiNguoiDung, {name: 'loaiNguoiDung'})
   maLoaiNguoiDung: number;
