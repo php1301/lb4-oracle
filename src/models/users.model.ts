@@ -19,18 +19,24 @@ export class Users extends Entity {
 
   @property({
     type: 'string',
+    index: {
+      unique: true
+  }
   })
   username?: string;
 
   @property({
     type: 'string',
     required: true,
+    index: {
+      unique: true
+  }
   })
   email: string;
 
   @property({
     type: 'date',
-    
+
     required: true,
   })
   ngaySinh: string;
@@ -40,7 +46,12 @@ export class Users extends Entity {
     required: true,
   })
   diaChi: string;
-
+  @property({
+    type: 'number',
+    required: true,
+    default: 0,
+  })
+  diemTichLuy: number;
   @property({
     type: 'string',
   })
