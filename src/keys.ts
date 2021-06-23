@@ -4,6 +4,7 @@
 // License text available at https://opensource.org/licenses/MIT
 
 import {BindingKey} from '@loopback/core';
+import {EmailManager} from './services/send-email.service';
 import {FileUploadHandler} from './types';
 
 /**
@@ -17,3 +18,6 @@ export const FILE_UPLOAD_SERVICE = BindingKey.create<FileUploadHandler>(
  * Binding key for the storage directory
  */
 export const STORAGE_DIRECTORY = BindingKey.create<string>('storage.directory');
+export namespace EmailManagerBindings {
+  export const SEND_MAIL = BindingKey.create<EmailManager>('services.email.send');
+}
