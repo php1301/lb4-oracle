@@ -15,16 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  Phim,
-  LichChieu,
-} from '../models';
+import {Phim, LichChieu} from '../models';
 import {PhimRepository} from '../repositories';
+import {DateTime} from 'luxon';
 
 export class PhimLichChieuController {
   constructor(
     @repository(PhimRepository) protected phimRepository: PhimRepository,
-  ) { }
+  ) {}
 
   @get('/phims/{id}/lich-chieus', {
     responses: {
@@ -42,7 +40,17 @@ export class PhimLichChieuController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<LichChieu>,
   ): Promise<LichChieu[]> {
-    return this.phimRepository.phimLichChieu(id).find(filter);
+    const FORMAT_STRING = 'yyyy-MM-dd\'T\'HH:mm:ssZZ';
+    const data = await this.phimRepository.phimLichChieu(id).find(filter);
+    data.forEach((nc, index)=>{
+      const isoString = new Date(nc.ngayChieuGioChieu)
+      const convertToRightTimezone = DateTime.fromISO(isoString.toISOString())
+        .setZone('Asia/Bangkok')
+        .toFormat(FORMAT_STRING);
+        console.log(convertToRightTimezone)
+      data[index].ngayChieuGioChieu = convertToRightTimezone
+    })
+    return data;
   }
 
   @post('/phims/{id}/lich-chieus', {
@@ -61,11 +69,12 @@ export class PhimLichChieuController {
           schema: getModelSchemaRef(LichChieu, {
             title: 'NewLichChieuInPhim',
             exclude: ['maLichChieu'],
-            optional: ['maPhim']
+            optional: ['maPhim'],
           }),
         },
       },
-    }) lichChieu: Omit<LichChieu, 'maLichChieu'>,
+    })
+    lichChieu: Omit<LichChieu, 'maLichChieu'>,
   ): Promise<LichChieu> {
     return this.phimRepository.phimLichChieu(id).create(lichChieu);
   }
@@ -88,7 +97,8 @@ export class PhimLichChieuController {
       },
     })
     lichChieu: Partial<LichChieu>,
-    @param.query.object('where', getWhereSchemaFor(LichChieu)) where?: Where<LichChieu>,
+    @param.query.object('where', getWhereSchemaFor(LichChieu))
+    where?: Where<LichChieu>,
   ): Promise<Count> {
     return this.phimRepository.phimLichChieu(id).patch(lichChieu, where);
   }
@@ -103,7 +113,8 @@ export class PhimLichChieuController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(LichChieu)) where?: Where<LichChieu>,
+    @param.query.object('where', getWhereSchemaFor(LichChieu))
+    where?: Where<LichChieu>,
   ): Promise<Count> {
     return this.phimRepository.phimLichChieu(id).delete(where);
   }
