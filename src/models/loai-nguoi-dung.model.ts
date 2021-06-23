@@ -6,7 +6,6 @@ export class LoaiNguoiDung extends Entity {
     type: 'number',
     id: true,
     generated: false,
-    required: true,
   })
   maLoaiNguoiDung: number;
 
