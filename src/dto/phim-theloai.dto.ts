@@ -10,7 +10,7 @@ export const theLoaiRequest: Partial<RequestBodyObject> = {
             items: {
               type: 'object',
               properties: {
-                maTheLoai: {type: 'string'},
+                maTheLoai: {type: 'number'},
               },
             },
           },
