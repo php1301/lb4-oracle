@@ -42,9 +42,19 @@ export class LichChieuController {
         },
       },
     })
-    lichChieu: Omit<LichChieu, "maLichChieu">,
-  ): Promise<LichChieu> {
-    return this.lichChieuRepository.create(lichChieu);
+    lichChieu: Omit<LichChieu, 'maLichChieu'>,
+  ): Promise<LichChieu | {message?: string}> {
+    try {
+      return await this.lichChieuRepository.create(lichChieu);
+    } catch (e) {
+      let message = '';
+      if (e.message.split('ORA')[1])
+        message = e.message.split('ORA')[1].substring(8);
+      else message = 'Tạo lịch chiếu lỗi ' + e.message;
+      return {
+        message,
+      };
+    }
   }
 
   @get('/lich-chieu/count')
