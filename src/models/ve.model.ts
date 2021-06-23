@@ -31,6 +31,18 @@ export class Ve extends Entity {
   giamGia: number;
 
   @property({
+    type: 'number',
+    default: 0,
+  })
+  diemTichLuySuDung: number;
+
+  @property({
+    type: 'string',
+    default: 0,
+  })
+  khuyenMai: string;
+
+  @property({
     type: 'string',
     default: "T1",
   })
