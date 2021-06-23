@@ -26,7 +26,8 @@ export class Rap extends Entity {
 
   @property({
     type: 'number',
-    required: true,
+    required: false,
+    default: 120,
   })
   soGhe: number;
 
