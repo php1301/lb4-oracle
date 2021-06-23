@@ -62,6 +62,13 @@ export class Users extends Entity {
   diemTichLuy: number;
 
   @property({
+    type: 'number',
+    required: true,
+    default: 0,
+  })
+  tongDiemTichLuy: number;
+
+  @property({
     type: 'string',
   })
   soDT?: string;
