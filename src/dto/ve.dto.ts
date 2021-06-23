@@ -12,6 +12,12 @@ export const datVeRequest: Partial<RequestBodyObject> = {
           giaVe: {
             type: 'number',
           },
+          khuyenMai: {
+            type: 'string',
+          },
+          diemTichLuySuDung:{
+            type: 'number',
+          },
           maLichChieu: {
             type: 'number',
           },
