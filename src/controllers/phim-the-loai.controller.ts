@@ -1,4 +1,3 @@
-import {theLoaiRequest} from '../dto/phim-theloai.dto';
 import {
   Count,
   CountSchema,
@@ -17,7 +16,8 @@ import {
   requestBody,
   RequestBodyObject,
 } from '@loopback/rest';
-import {Phim, PhimTheLoai, TheLoai} from '../models';
+import {theLoaiRequest} from '../dto/phim-theloai.dto';
+import {Phim, TheLoai} from '../models';
 import {PhimRepository} from '../repositories';
 
 export class PhimTheLoaiController {
@@ -106,18 +106,31 @@ export class PhimTheLoaiController {
   })
   async patch(
     @param.path.number('id') id: number,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(TheLoai, {partial: true}),
-        },
-      },
-    })
-    theLoai: Partial<TheLoai>,
+    @requestBody(theLoaiRequest)
+    request: RequestBodyObject,
     @param.query.object('where', getWhereSchemaFor(TheLoai))
     where?: Where<TheLoai>,
-  ): Promise<Count> {
-    return this.phimRepository.phimtheloai(id).patch(theLoai, where);
+  ): Promise<void> {
+    let count = 0;
+    const {theLoai} = request;
+    console.log(theLoai);
+    const oldTheLoai = await this.phimRepository.phimtheloai(id).find();
+    await Promise.all(
+      oldTheLoai.map(async (i: TheLoai) => {
+        await this.phimRepository
+          .phimtheloai(id)
+          .unlink(i.maTheLoai);
+      }),
+    );
+    await Promise.all(
+      theLoai.map(async (i: TheLoai) => {
+        await this.phimRepository
+          .phimtheloai(id)
+          .link(i.maTheLoai);
+        count++;
+      }),
+    );
+    console.log(count);
   }
 
   @del('/phims/{id}/the-loais', {
