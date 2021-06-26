@@ -24,6 +24,7 @@ import {
 } from '@loopback/rest';
 import {VeResponse} from '../@types/ve-response';
 import {datVeRequest} from '../dto/ve.dto';
+import {EmailManagerBindings} from '../keys';
 import {Ghe, Ve} from '../models';
 import {
   DatVeRepository,
@@ -31,6 +32,7 @@ import {
   UsersRepository,
   VeRepository,
 } from '../repositories';
+import {EmailManager} from '../services/send-email.service';
 
 export class VeController {
   constructor(
@@ -43,6 +45,7 @@ export class VeController {
     @repository(GheDaDatRepository)
     public gheDaDatRepository: GheDaDatRepository,
     @inject(RestBindings.Http.RESPONSE) private res: Response,
+    @inject(EmailManagerBindings.SEND_MAIL) public emailManager: EmailManager,
   ) {}
 
   @post('/ve')
@@ -73,7 +76,7 @@ export class VeController {
   async datVe(
     @requestBody(datVeRequest)
     veGhe: Ve & Ghe,
-  ): Promise<VeResponse> {
+  ): Promise<VeResponse | Response<{message?: string}>> {
     // ACID Properties
     const {ghe} = veGhe;
     const enumBonusCharge: {
@@ -155,7 +158,7 @@ export class VeController {
             veGhe.giamGia -
             veGhe.diemTichLuySuDung * 10 -
             (isBirthday ? Math.floor((tongTienVe * 10) / 100) : 0);
-      console.log(finalTongTienVe);
+      console.log('Tổng tính', finalTongTienVe);
       // Vé data - chưa commit nên vẫn rollback được nếu có lỗi
       const veData = {
         ngayDat: new Date().toDateString(),
@@ -191,12 +194,12 @@ export class VeController {
       const userBeforeCommit = await this.userRepository.findById(
         veGhe.taiKhoan,
       );
-      console.log("Mã loại cũ", userBeforeCommit.maLoaiNguoiDung)
+      console.log('Mã loại cũ', userBeforeCommit.maLoaiNguoiDung);
       await transaction.commit();
       const userAfterCommit = await this.userRepository.findById(
         veGhe.taiKhoan,
       );
-      console.log("Mã loại mới", userAfterCommit.maLoaiNguoiDung)
+      console.log('Mã loại mới', userAfterCommit.maLoaiNguoiDung);
       console.log(userAfterCommit.tongDiemTichLuy);
       console.log(
         this.handleUpgradeMessage(
@@ -215,14 +218,36 @@ export class VeController {
     } catch (e) {
       await transaction.rollback();
       if (e.message.split(' - ')[0] === 'Point error') {
-        res = {message: e.message.split(' - ')[1]};
-        // throw Error(e.message.split(' - ')[1]);
+        const err = {message: e.message.split(' - ')[1]};
+        return this.res.status(400).json({err});
       } else {
-        res = {message: 'Đặt ghế lỗi' + ' ' + e.message};
+        const err = {message: 'Đặt ghế lỗi' + ' ' + e.message};
+        return this.res.status(400).json({err});
       }
       // throw Error('Đặt ghế không thành không' + ' ' + e.message);
     }
     return res;
+  }
+
+  @post('/gui-email-hoa-don')
+  @response(200, {
+    description: 'Ve model instance',
+    content: {'application/json': {schema: getModelSchemaRef(Ve)}},
+  })
+  async guiEmailHoaDon(
+    @requestBody({})
+    ve: any,
+  ): Promise<{message: string}> {
+    try {
+      await this.emailManager.sendMail(ve);
+      return {
+        message: 'Send email sucesss',
+      };
+    } catch (e) {
+      return {
+        message: 'Error occurred ' + e.message,
+      };
+    }
   }
   @get('/ve/count')
   @response(200, {
@@ -398,7 +423,7 @@ export class VeController {
   }
   async isBirthDayMonth(id: number): Promise<boolean> {
     const user = await this.userRepository.findById(id);
-    const birthday: Date = (user.ngaySinh as unknown) as Date;
+    const birthday: Date = user.ngaySinh as unknown as Date;
     console.log('Sinh nhat', birthday, birthday.getMonth());
     const finalParam =
       birthday.getMonth() + 1 < 10
