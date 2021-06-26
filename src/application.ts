@@ -14,6 +14,8 @@ import {
 } from './components/jwt-authentication';
 import {MySequence} from './sequence';
 import * as dotenv from 'dotenv';
+import {EmailManagerBindings} from './keys';
+import {EmailService} from './services';
 dotenv.config();
 export {ApplicationConfig};
 
@@ -47,7 +49,7 @@ export class MovieHeqtApplication extends BootMixin(
     this.component(AuthorizationComponent);
     this.component(JWTAuthenticationComponent);
     this.component(CasbinAuthorizationComponent);
-
+    this.bind(EmailManagerBindings.SEND_MAIL).toClass(EmailService);
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
     this.bootOptions = {
