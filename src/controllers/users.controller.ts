@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   authenticate,
   TokenService,
-  UserService
+  UserService,
 } from '@loopback/authentication';
 import {inject} from '@loopback/core';
 import {
@@ -9,7 +10,7 @@ import {
   FilterExcludingWhere,
   model,
   property,
-  repository
+  repository,
 } from '@loopback/repository';
 import {
   get,
@@ -24,7 +25,7 @@ import {
   response,
   Response,
   RestBindings,
-  SchemaObject
+  SchemaObject,
 } from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import axios from 'axios';
@@ -33,7 +34,7 @@ import FormData from 'form-data';
 import {
   Credentials,
   TokenServiceBindings,
-  UserServiceBindings
+  UserServiceBindings,
 } from '../components/jwt-authentication';
 import {doiPasswordRequest} from '../dto/user.dto';
 import {FILE_UPLOAD_SERVICE} from '../keys';
@@ -231,7 +232,10 @@ export class UserController {
     newUserRequest: NewUserRequest,
   ): Promise<any> {
     const password = await hash(newUserRequest.password, await genSalt(10));
-    const savedUser = await this.userRepository.create({...newUserRequest, password});
+    const savedUser = await this.userRepository.create({
+      ...newUserRequest,
+      password,
+    });
     const userProfile = this.userService.convertToUserProfile(savedUser);
     const token = await this.jwtService.generateToken(userProfile);
     await this.userRepository
@@ -395,5 +399,36 @@ export class UserController {
       }
     }
     return {files, fields: request.body};
+  }
+
+  @get('/user/{id}/birthday-and-points')
+  @response(200, {
+    description: 'User model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Users),
+      },
+    },
+  })
+  async isBirthDayMotnhUser(
+    @param.path.number('id') id: number,
+  ): Promise<{isBirthday: boolean; points: number}> {
+    const user = await this.userRepository.findById(id);
+    const points = user.diemTichLuy;
+    const birthday: Date = (user.ngaySinh as unknown) as Date;
+    console.log('Sinh nhat', birthday, birthday.getMonth());
+    const finalParam =
+      birthday.getMonth() + 1 < 10
+        ? `0${birthday.getMonth() + 1}`
+        : birthday.getMonth() + 1;
+    const sql = `
+    select call_proc_isBirthday(:p1) as checkResult from dual
+    `;
+    console.log(finalParam);
+    const result = (await this.userRepository.execute(sql, [
+      finalParam,
+    ])) as any;
+    console.log(result[0]['CHECKRESULT']);
+    return {isBirthday: result[0]['CHECKRESULT'] === 1, points};
   }
 }

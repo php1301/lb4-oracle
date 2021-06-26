@@ -55,6 +55,7 @@ export class MyUserService implements UserService<Users, Credentials> {
       id: user.taiKhoan,
       email: user.email,
       avatar: user.avatar,
+      emaiL: user.email,
       maLoaiNguoiDung: user.maLoaiNguoiDung,
     };
   }
