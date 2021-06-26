@@ -1,3 +1,4 @@
+import {inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -7,16 +8,19 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
+  Response,
   response,
+  RestBindings,
 } from '@loopback/rest';
+import {DateTime} from 'luxon';
 import {LichChieu} from '../models';
 import {LichChieuRepository} from '../repositories';
 
@@ -24,6 +28,7 @@ export class LichChieuController {
   constructor(
     @repository(LichChieuRepository)
     public lichChieuRepository: LichChieuRepository,
+    @inject(RestBindings.Http.RESPONSE) protected res: Response,
   ) {}
 
   @post('/lich-chieu')
@@ -43,7 +48,7 @@ export class LichChieuController {
       },
     })
     lichChieu: Omit<LichChieu, 'maLichChieu'>,
-  ): Promise<LichChieu | {message?: string}> {
+  ): Promise<LichChieu | Response<{message?: string}>> {
     try {
       return await this.lichChieuRepository.create(lichChieu);
     } catch (e) {
@@ -51,9 +56,7 @@ export class LichChieuController {
       if (e.message.split('ORA')[1])
         message = e.message.split('ORA')[1].substring(8);
       else message = 'Tạo lịch chiếu lỗi ' + e.message;
-      return {
-        message,
-      };
+      return this.res.status(400).json({message});
     }
   }
 
@@ -83,7 +86,17 @@ export class LichChieuController {
   async find(
     @param.filter(LichChieu) filter?: Filter<LichChieu>,
   ): Promise<LichChieu[]> {
-    return this.lichChieuRepository.find(filter);
+    const FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ssZZ";
+    const data = await this.lichChieuRepository.find(filter);
+    data.forEach((nc, index) => {
+      const isoString = new Date(nc.ngayChieuGioChieu);
+      const convertToRightTimezone = DateTime.fromISO(isoString.toISOString())
+        .setZone('Asia/Bangkok')
+        .toFormat(FORMAT_STRING);
+      console.log(convertToRightTimezone);
+      data[index].ngayChieuGioChieu = convertToRightTimezone;
+    });
+    return data;
   }
 
   @patch('/lich-chieu')
