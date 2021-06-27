@@ -57,3 +57,34 @@ Stored Procedure
 1. Query toan bo lich chieu cua he thong rap -> cumrap -> rap
 2. Goi Y HeThongRap -> CumRap -> Rap cho combobox
 3. Tinh tien ve (nghien cuu them goi stored procedure o nodejs), tien ve se = tien cua cac ghe(base on loaiGhe) + loai
+
+{
+  "ngayDat": "string",
+  "giaVe": 60000,
+  "maLichChieu": 6,
+  "taiKhoan": 4,
+  "giamGia": 5000,
+  "diemTichLuySuDung": 10,
+  "loaiVe": "T2",
+  "hinhAnh": "https://i.imgur.com/6fX7jlu.jpeg",
+  "ghe": [
+    {
+      "maGhe": 422
+    },
+ {
+      "maGhe": 423
+    }
+  ]
+}
+
+
+{
+  "theLoai": [
+    {
+      "maTheLoai": 2
+    },
+  {
+      "maTheLoai": 3
+    }
+  ]
+}
