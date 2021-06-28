@@ -99,6 +99,7 @@ ALTER TABLE UserCredentials ADD CONSTRAINT FK_usercredentials_user FOREIGN KEY(t
 -- VE
 ALTER TABLE Ve ADD CONSTRAINT FK_ve_nguoidung FOREIGN KEY(taiKhoan) REFERENCES Users(taiKhoan) ON DELETE CASCADE;
 ALTER TABLE Ve ADD CONSTRAINT FK_ve_lichchieu FOREIGN KEY (maLichChieu) REFERENCES LichChieu(maLichChieu) ON DELETE CASCADE;
+ALTER TABLE Ve CHANGE ngayDat ngayDat DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
 -- GHE
 ALTER TABLE Ghe ADD CONSTRAINT FK_ghe_maloaighe FOREIGN KEY(maLoaiGhe) REFERENCES LoaiGhe(maLoaiGhe) ON DELETE CASCADE;
 ALTER TABLE Ghe ADD CONSTRAINT FK_ghe_maRap FOREIGN KEY(maRap) references Rap(maRap) ON DELETE CASCADE;
@@ -151,3 +152,30 @@ ALTER TABLE `HeThongRap` ENGINE=InnoDB;
 ALTER TABLE `GheDaDat` ENGINE=InnoDB;
 ALTER TABLE `DatVe` ENGINE=InnoDB;
 ALTER TABLE `CumRap` ENGINE=InnoDB;
+
+
+DROP PROCEDURE IF EXISTS sp1;
+DELIMITER //
+CREATE PROCEDURE sp1()
+BEGIN
+SELECT MONTH(v.ngayDat) as thang, SUM(v.giaVe) as doanhThu
+FROM Ve v
+GROUP BY thang;
+END //
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS sp2;
+DELIMITER //
+CREATE PROCEDURE sp2(IN thang INT, IN nam INT, IN maPhimArg INT)
+BEGIN
+SELECT SUM(v.giaVe) as doanhThu, p.maPhim as maPhim, p.tenPhim as tenPhim
+FROM Ve v, Phim p, LichChieu lc
+where v.maLichChieu = lc.maLichChieu
+and lc.maPhim = p.maPhim
+and p.maPhim = maPhimArg
+and MONTH(v.ngayDat) = thang
+and YEAR(v.ngayDat)= nam
+GROUP BY v.maVe;
+END //
+DELIMITER ;

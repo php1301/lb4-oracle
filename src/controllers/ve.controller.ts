@@ -76,7 +76,7 @@ export class VeController {
     select VE_TINHTIEN(:p1, :p2) as tong from dual
     `;
     const transaction = await this.veRepository.dataSource.beginTransaction(
-      IsolationLevel.SERIALIZABLE,
+      IsolationLevel.READ_COMMITTED,
     );
     let res: VeResponse = {};
     try {
